@@ -12,7 +12,7 @@ import {
 
 const TextInputModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [value, onChangeText] = React.useState('');
+  const [textInput, setTextInput] = useState('');
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -30,17 +30,18 @@ const TextInputModal = () => {
                 placeholder="Your name"
                 maxLength={20}
                 onBlur={Keyboard.dismiss}
-                value={this.state.name}
-                onChangeText={this.handleNameChange}
+                value={textInput}
+                onChangeText={newText => setTextInput(newText)}
             />
 
             <TouchableHighlight
               style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
               onPress={() => {
+                console.log("#####"+textInput)
                 setModalVisible(!modalVisible);
               }}
             >
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              <Text style={styles.textStyle}>Submit</Text>
             </TouchableHighlight>
           </View>
         </View>
