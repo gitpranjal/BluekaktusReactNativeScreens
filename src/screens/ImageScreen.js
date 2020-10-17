@@ -1,5 +1,5 @@
 import React from "react"
-import { View, Text, Button, TouchableOpacity, Image, StyleSheet} from "react-native"
+// import { View, Text, Button, TouchableOpacity, Image, StyleSheet} from "react-native"
 import TouchableImage from "../components/TouchableImage"
 
 const ImageScreen = () => {

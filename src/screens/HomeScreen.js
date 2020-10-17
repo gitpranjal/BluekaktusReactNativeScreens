@@ -7,7 +7,6 @@ const HomeScreen = (props) => {
     <Text style={styles.text}>Choose an options</Text>
     <Button
         onPress = {() => {
-          console.log("Touched")
           props.navigation.navigate('ImageScreen')
         }}
         title = "Go to Image screen"
@@ -15,10 +14,15 @@ const HomeScreen = (props) => {
 
     <Button
         onPress = {() => {
-          console.log("Touched")
           props.navigation.navigate('TextInputModal')
         }}
         title = "Go to modal screen"
+    />
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('ScrollableDefectsInfo')
+        }}
+        title = "Go to scrollable defects screen"
     />
     
   </View>
