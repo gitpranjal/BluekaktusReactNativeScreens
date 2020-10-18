@@ -5,7 +5,8 @@ import {
     Modal,
     TextInput,
     TouchableHighlight,
-    Keyboard
+    Keyboard,
+    ScrollView
   } from "react-native";
 
 
@@ -26,17 +27,34 @@ const  ScrollableDefectsInfo = () => {
                 }}
             >
                 <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text>{DefectText}</Text>
+                    <View style={{...styles.modalView, width:"90%", height: "60%"}}>
+                    <View style={styles.textScrollViewStyle} >
+                      <ScrollView>
+                        <Text >{DefectText}</Text>
+                      </ScrollView>
+                    </ View>
+
+                    <View>
+                      
+                      <ImageBackground
+                        style={{width: "90%", height: "90%", right:"41%", top: "5%"}}
+                        source={{
+                        uri: "http://ai.bluekaktus.com/api/contourApi/static/contourImages/image-1602231948390.jpeg",
+                        // flex:1
+                        }}
+                      >
+                          <View style={{...styles.circle, left:0, top:0}}></View>
+                      </ImageBackground>
+                    </View> 
 
                         <TouchableHighlight
-                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                        style={{ ...styles.openButton, backgroundColor: "#2196F3", top:"-3%" }}
                         onPress={() => {
                             console.log("#####"+DefectText)
                             setModalVisible(!modalVisible);
                         }}
                         >
-                        <Text style={styles.textStyle}>Gotcha!</Text>
+                        <Text style={{...styles.textStyle}}>Gotcha!</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
@@ -113,6 +131,13 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       padding: 10,
       elevation: 10
+    },
+    textScrollViewStyle: {
+      backgroundColor: "white",
+      borderRadius: 5,
+      width: "90%",
+      height: "10%",
+      // elevation: 10
     },
     openButtonForBottomScrollView: {
         backgroundColor: "#2196F3",
