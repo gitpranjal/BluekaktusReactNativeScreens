@@ -14,10 +14,39 @@ const  ScrollableDefectsInfo = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [DefectText, SetDefectText] = useState('');
+    const [DefectDetailmodalVisible, SetDefectDetailmodalVisibility] = useState(false);
 
     return (
         
         <View style={styles.floatView}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={DefectDetailmodalVisible}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                }}
+            >
+                  <View style={styles.centeredView} >
+                  <View style={{...styles.modalView, width:"60%", height: "40%", backgroundColor:"#00008b"}}>
+                      <ScrollView showsHorizontalScrollIndicator={true}>
+                        <Text style={{color:"white"}}>{DefectText}</Text>
+                      </ScrollView>
+                      <TouchableHighlight
+                        style={{ ...styles.openButton, backgroundColor: "#ff69b4", top:"-4%" }}
+                        onPress={() => {
+                            console.log("#####"+DefectText)
+                            SetDefectDetailmodalVisibility(!DefectDetailmodalVisible);
+                        }}
+                        >
+                        <Text style={{...styles.textStyle}}>Okay</Text>
+                    </TouchableHighlight>
+                    </ View>
+                  </ View>
+                  
+            </Modal>
+
+
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -28,16 +57,16 @@ const  ScrollableDefectsInfo = () => {
             >
                 <View style={styles.centeredView}>
                     <View style={{...styles.modalView, width:"90%", height: "60%"}}>
-                    <View style={styles.textScrollViewStyle} >
-                      <ScrollView>
-                        <Text >{DefectText}</Text>
-                      </ScrollView>
-                    </ View>
+                    
+                      <TouchableOpacity onPress = {() => SetDefectDetailmodalVisibility(true)}>
+                        <Text style={styles.defectTextHeading}>{DefectText}</Text>
+                      </TouchableOpacity>
+                    
 
                     <View>
                       
                       <ImageBackground
-                        style={{width: "90%", height: "90%", right:"41%", top: "5%"}}
+                        style={{width: "90%", height: "90%", right:"41%", top: "7%"}}
                         source={{
                         uri: "http://ai.bluekaktus.com/api/contourApi/static/contourImages/image-1602231948390.jpeg",
                         // flex:1
@@ -48,7 +77,7 @@ const  ScrollableDefectsInfo = () => {
                     </View> 
 
                         <TouchableHighlight
-                        style={{ ...styles.openButton, backgroundColor: "#2196F3", top:"-3%" }}
+                        style={{ ...styles.openButton, backgroundColor: "#F194FF", top:"-4%" }}
                         onPress={() => {
                             console.log("#####"+DefectText)
                             setModalVisible(!modalVisible);
@@ -61,7 +90,7 @@ const  ScrollableDefectsInfo = () => {
             </Modal>
             <FlatList 
               contentContainerStyle={{ flexGrow: 1 }}
-              data={[{key:"1", text:"A"}, {key:"2", text:"B"}, {key:"3", text:"B"}, {key:"4", text:"B"}, {key:"5", text:"B"}]}
+              data={[{key:"1", text:"AFYFJGFJF"}, {key:"2", text:"B"}, {key:"3", text:"B"}, {key:"4", text:"B"}, {key:"5", text:"B"}]}
               renderItem={({item}) => {
               return (
                 <TouchableHighlight
@@ -137,6 +166,12 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       width: "90%",
       height: "10%",
+      borderColor:"blue",
+      borderWidth: 2,
+      // flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 22
       // elevation: 10
     },
     openButtonForBottomScrollView: {
@@ -171,6 +206,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     // left: 40,
     backgroundColor: '#F194FF',
+  },
+  defectTextHeading: {
+    backgroundColor: '#F194FF',
+    color: 'white',
+    width: "75%",
+    borderRadius: 7,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginLeft: '11%',
+    padding: "2%",
+    fontSize:  27,
+    marginTop: '-5%'
   }
   });
 
