@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Button, TouchableOpacity, FlatList, StyleSheet} from "react-native"
 import { Dimensions } from 'react-native'
+import ScrollableDefectsInfo from "./ScrollableDefectsInfo"
 import {
   Alert,
   Modal,
@@ -17,12 +18,12 @@ const TouchableImage = (props) => {
   const [textInput, setTextInput] = useState('');
   const [x, setX] = useState(-1)
   const [y, setY] = useState(-1)
-  const [defectDotList, addDefectDot] = useState([{key:"0", x:-1, y:-1}])
+  const [defectDotList, addDefectDot] = useState([])
   const [dotViewsList, addDefectDotView] = useState([])
   
     return (
       // style={{ flex: 1, backgroundColor: '#2196F3', alignItems: 'center', justifyContent: 'center' }}
-        <View style={{backgroundColor: "blue", width: Dimensions.get('window').width, height: Dimensions.get('window').height}}>
+        <View style={{backgroundColor: "#008080", width: Dimensions.get('window').width, height: Dimensions.get('window').height}}>
             
             
             <Modal
@@ -41,7 +42,9 @@ const TouchableImage = (props) => {
                       maxLength={20}
                       onBlur={Keyboard.dismiss}
                       value={textInput}
-                      onChangeText={newText => setTextInput(newText)}
+                      onChangeText={(newText) => {
+                        setTextInput(newText)
+                      }}
                   />
                   
                   {/* #2196F3 */}
@@ -51,7 +54,9 @@ const TouchableImage = (props) => {
                       console.log("Defect: "+textInput+"  X coord: "+x+" Y coord: "+y)
                       // console.log(defectDotList)
                       setModalVisible(!modalVisible);
-            
+                      addDefectDot(defectDotList.concat([{key: defectDotList.length.toString(), x: x, y: y, text: textInput}]))
+                      // console.log("#Defect dotlist after adding element##")
+                      // console.log(defectDotList)
                     }}
                   >
                     <Text style={styles.textStyle}>Submit</Text>
@@ -69,14 +74,12 @@ const TouchableImage = (props) => {
               setX(event.nativeEvent.locationX)
               setY(event.nativeEvent.locationY)
               // defectDotList.push({key: defectDotList.length.toString(), x: event.nativeEvent.locationX, y: event.nativeEvent.locationY})
-              addDefectDot(defectDotList.concat([{key: defectDotList.length.toString(), x: event.nativeEvent.locationX, y: event.nativeEvent.locationY}]))
-              addDefectDotView(dotViewsList.concat([<View key={dotViewsList.length.toString()} style={{...styles.circle, left:event.nativeEvent.locationX, top:event.nativeEvent.locationY}}></View>]))
               setModalVisible(true)
+              addDefectDotView(dotViewsList.concat([<View key={dotViewsList.length.toString()} style={{...styles.circle, left:event.nativeEvent.locationX, top:event.nativeEvent.locationY}}></View>]))
               
-
               // getDefectCoordinates(event)
 
-              }}defectDotList
+              }}
               >
             
             <ImageBackground
@@ -100,12 +103,20 @@ const TouchableImage = (props) => {
             {/* <View style={{...styles.circle, left:defectDotList[defectDotList.length-1].x, top:defectDotList[defectDotList.length-1].y}}></View> */}
       
             {dotViewsList}
+            
+
             </ImageBackground>
             
             </TouchableOpacity>
+             
+            
+
             </View>
             
-            
+            <ScrollableDefectsInfo 
+                source={props.source}
+                markedDefects={defectDotList}
+            /> 
             
         </View>
     )
@@ -140,7 +151,7 @@ const styles = StyleSheet.create({
       width: 300,
       height: 350,
       alignSelf: 'center',
-      bottom: '-20%'
+      bottom: '-15%'
 
     },
     centeredView: {

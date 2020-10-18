@@ -10,14 +10,17 @@ import {
   } from "react-native";
 
 
-const  ScrollableDefectsInfo = () => {
+const  ScrollableDefectsInfo = (props) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [DefectText, SetDefectText] = useState('');
+    const [DefectCoordinateX, SetDefectCoordinateX] = useState(-1)
+    const [DefectCoordinateY, SetDefectCoordinateY] = useState(-1)
+
     const [DefectDetailmodalVisible, SetDefectDetailmodalVisibility] = useState(false);
+    
 
     return (
-        
         <View style={styles.floatView}>
             <Modal
                 animationType="slide"
@@ -29,7 +32,7 @@ const  ScrollableDefectsInfo = () => {
             >
                   <View style={styles.centeredView} >
                   <View style={{...styles.modalView, width:"60%", height: "40%", backgroundColor:"#00008b"}}>
-                      <ScrollView showsHorizontalScrollIndicator={true}>
+                      <ScrollView showsVerticalScrollIndicator={true}>
                         <Text style={{color:"white"}}>{DefectText}</Text>
                       </ScrollView>
                       <TouchableHighlight
@@ -56,7 +59,7 @@ const  ScrollableDefectsInfo = () => {
                 }}
             >
                 <View style={styles.centeredView}>
-                    <View style={{...styles.modalView, width:"90%", height: "60%"}}>
+                    <View style={{...styles.modalView, width:"90%", height: "75%", backgroundColor: "#ba55d3"}}>
                     
                       <TouchableOpacity onPress = {() => SetDefectDetailmodalVisibility(true)}>
                         <Text style={styles.defectTextHeading}>{DefectText}</Text>
@@ -66,18 +69,18 @@ const  ScrollableDefectsInfo = () => {
                     <View>
                       
                       <ImageBackground
-                        style={{width: "90%", height: "90%", right:"41%", top: "7%"}}
+                        style={{width: 300, height: 350, right:"0%", top: "7%"}}
                         source={{
-                        uri: "http://ai.bluekaktus.com/api/contourApi/static/contourImages/image-1602231948390.jpeg",
+                        uri: props.source,
                         // flex:1
                         }}
                       >
-                          <View style={{...styles.circle, left:0, top:0}}></View>
+                          <View style={{...styles.circle, left:DefectCoordinateX, top:DefectCoordinateY}}></View>
                       </ImageBackground>
                     </View> 
 
                         <TouchableHighlight
-                        style={{ ...styles.openButton, backgroundColor: "#F194FF", top:"-4%" }}
+                        style={{ ...styles.openButton, backgroundColor: "#00008b", top:"15%" }}
                         onPress={() => {
                             console.log("#####"+DefectText)
                             setModalVisible(!modalVisible);
@@ -88,28 +91,33 @@ const  ScrollableDefectsInfo = () => {
                     </View>
                 </View>
             </Modal>
+            
             <FlatList 
-              contentContainerStyle={{ flexGrow: 1 }}
-              data={[{key:"1", text:"AFYFJGFJF"}, {key:"2", text:"B"}, {key:"3", text:"B"}, {key:"4", text:"B"}, {key:"5", text:"B"}]}
-              renderItem={({item}) => {
-              return (
-                <TouchableHighlight
-                    style={styles.openButtonForBottomScrollView}
-                    onPress={() => {
-                    setModalVisible(true);
-                    SetDefectText(item.text)
-                    }}
-                >
-                <Text style={styles.textStyle}>{item.text}</Text>
-                 </TouchableHighlight>
+                // style={{flex: 1}}
+                // contentContainerStyle={{ flexDirection: 'column', flexGrow: 1}}
+                // data={[{key:"1", text:"AFYFJGFJF"}, {key:"2", text:"B"}, {key:"3", text:"B"}, {key:"4", text:"B"}, {key:"5", text:"B"}]}
+                data={props.markedDefects}
+                renderItem={({item}) => {
+                return (
+                  
+                    <TouchableHighlight
+                      style={{...styles.openButtonForBottomScrollView, flexGrow: 1}}
+                      onPress={() => {
+                      setModalVisible(true);
+                      SetDefectText(item.text)
+                      SetDefectCoordinateX(item.x)
+                      SetDefectCoordinateY(item.y)
+                      }}
+                    >
+                  <Text style={styles.textStyle}>{item.text}</Text>
+                  </TouchableHighlight>
 
-              )
-              }}
-            />
-
-       
-        
-
+                )
+                }}
+              />
+            
+              
+            
         </View>
     )
 }
@@ -175,7 +183,7 @@ const styles = StyleSheet.create({
       // elevation: 10
     },
     openButtonForBottomScrollView: {
-        backgroundColor: "#2196F3",
+        backgroundColor: "#00008b",
         borderRadius: 7,
         padding: 15,
         elevation: 10,
@@ -201,20 +209,20 @@ const styles = StyleSheet.create({
   floatView: {
     position: 'absolute',
     width: '100%',
-    height: "20%",
-    bottom: 0 ,
+    height: "30%",
+    bottom: "5%" ,
     alignSelf: 'center',
     // left: 40,
-    backgroundColor: '#F194FF',
+    backgroundColor: '#db7093',
   },
   defectTextHeading: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#00008b',
     color: 'white',
-    width: "75%",
+    width: "100%",
     borderRadius: 7,
     textAlign: 'center',
     fontWeight: 'bold',
-    marginLeft: '11%',
+    marginLeft: '5%',
     padding: "2%",
     fontSize:  27,
     marginTop: '-5%'
