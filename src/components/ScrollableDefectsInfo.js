@@ -13,7 +13,8 @@ import {
 const  ScrollableDefectsInfo = (props) => {
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [DefectText, SetDefectText] = useState('');
+    const [DefectTitle, setDefectTitle] = useState('');
+    const [DefectDetail, setDefectDetail] = useState('');
     const [DefectCoordinateX, SetDefectCoordinateX] = useState(-1)
     const [DefectCoordinateY, SetDefectCoordinateY] = useState(-1)
 
@@ -33,12 +34,12 @@ const  ScrollableDefectsInfo = (props) => {
                   <View style={styles.centeredView} >
                   <View style={{...styles.modalView, width:"60%", height: "40%", backgroundColor:"#00008b"}}>
                       <ScrollView showsVerticalScrollIndicator={true}>
-                        <Text style={{color:"white"}}>{DefectText}</Text>
+                        <Text style={{color:"white"}}>{DefectDetail}</Text>
                       </ScrollView>
                       <TouchableHighlight
                         style={{ ...styles.openButton, backgroundColor: "#ff69b4", top:"-4%" }}
                         onPress={() => {
-                            console.log("#####"+DefectText)
+                            console.log("#####"+DefectDetail)
                             SetDefectDetailmodalVisibility(!DefectDetailmodalVisible);
                         }}
                         >
@@ -62,7 +63,7 @@ const  ScrollableDefectsInfo = (props) => {
                     <View style={{...styles.modalView, width:"90%", height: "75%", backgroundColor: "#ba55d3"}}>
                     
                       <TouchableOpacity onPress = {() => SetDefectDetailmodalVisibility(true)}>
-                        <Text style={styles.defectTextHeading}>{DefectText}</Text>
+                        <Text style={styles.defectTextHeading}>{DefectTitle}</Text>
                       </TouchableOpacity>
                     
 
@@ -86,7 +87,7 @@ const  ScrollableDefectsInfo = (props) => {
                         <TouchableHighlight
                         style={{ ...styles.openButton, backgroundColor: "#00008b", top:"15%" }}
                         onPress={() => {
-                            console.log("#####"+DefectText)
+                            console.log("#####"+DefectDetail)
                             setModalVisible(!modalVisible);
                         }}
                         >
@@ -108,12 +109,13 @@ const  ScrollableDefectsInfo = (props) => {
                       style={{...styles.openButtonForBottomScrollView, flexGrow: 1}}
                       onPress={() => {
                       setModalVisible(true);
-                      SetDefectText(item.text)
+                      setDefectTitle(item.title)
+                      setDefectDetail(item.text)
                       SetDefectCoordinateX(item.x)
                       SetDefectCoordinateY(item.y)
                       }}
                     >
-                  <Text style={styles.textStyle}>{item.text}</Text>
+                  <Text style={styles.textStyle}>{item.title.toUpperCase()}</Text>
                   </TouchableHighlight>
 
                 )

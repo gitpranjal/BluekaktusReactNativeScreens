@@ -8,7 +8,7 @@ const ImageScreen = () => {
     return (
 
         <TouchableImage
-        source = "http://ai.bluekaktus.com/api/contourApi/static/contourImages/image-1603087299334.jpeg"
+        source = "http://ai.bluekaktus.com/api/contourApi/static/contourImages/image-1603088474881.jpg"
         />
     )
 }

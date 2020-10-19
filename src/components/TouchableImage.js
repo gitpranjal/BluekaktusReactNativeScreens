@@ -15,7 +15,8 @@ import {
 
 const TouchableImage = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [textInput, setTextInput] = useState('');
+  const [DefectTitleInput, setDefectTitle] = useState('');
+  const [DefectDetailInput, setDefectDetail] = useState('')
   const [x, setX] = useState(-1)
   const [y, setY] = useState(-1)
   const [defectDotList, addDefectDot] = useState([])
@@ -36,14 +37,25 @@ const TouchableImage = (props) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
+                <Text style={{color:"white", right: "37%"}}>TITLE</Text>
                 <TextInput
-                      style={{ ...styles.textInput, backgroundColor: 'white', margin: 7, width: 150, borderColor: "#F194FF", borderWidth:2}}
-                      placeholder="Enter the defect"
+                      style={{ ...styles.textInput, backgroundColor: 'white', margin: 7, width: 250, borderColor: "#F194FF", borderWidth:2}}
+                      placeholder="Enter the defect title"
                       maxLength={20}
                       onBlur={Keyboard.dismiss}
-                      value={textInput}
+                      value={DefectTitleInput}
                       onChangeText={(newText) => {
-                        setTextInput(newText)
+                        setDefectTitle(newText)
+                      }}
+                  />
+                  <Text style={{color:"white", right: "35%"}}>DETAILS</Text>
+                  <TextInput
+                      style={{ ...styles.textInput, backgroundColor: 'white', margin: 7, width: 250, height:80, borderColor: "#F194FF", borderWidth:2}}
+                      placeholder="Enter the defect details"
+                      onBlur={Keyboard.dismiss}
+                      value={DefectDetailInput}
+                      onChangeText={(newText) => {
+                        setDefectDetail(newText)
                       }}
                   />
                   
@@ -51,15 +63,17 @@ const TouchableImage = (props) => {
                   <TouchableHighlight
                     style={{ ...styles.openButton, backgroundColor: "#F194FF" }}
                     onPress={() => {
-                      console.log("Defect: "+textInput+"  X coord: "+x+" Y coord: "+y)
+                      console.log("Defect: "+DefectTitleInput+"  X coord: "+x+" Y coord: "+y+" with detail"+ DefectDetailInput)
                       // console.log(defectDotList)
                       setModalVisible(!modalVisible);
-                      addDefectDot(defectDotList.concat([{key: defectDotList.length.toString(), x: x, y: y, text: textInput}]))
+                      addDefectDot(defectDotList.concat([{key: defectDotList.length.toString(), x: x, y: y, title: DefectTitleInput, text: DefectDetailInput}]))
                       // console.log("#Defect dotlist after adding element##")
                       // console.log(defectDotList)
+                      setDefectDetail("")
+                      setDefectTitle("")
                     }}
                   >
-                    <Text style={styles.textStyle}>Submit</Text>
+                    <Text style={styles.textStyle}>Done</Text>
                   </TouchableHighlight>
                 </View>
               </View>
