@@ -75,7 +75,10 @@ const  ScrollableDefectsInfo = (props) => {
                         // flex:1
                         }}
                       >
-                          <View style={{...styles.circle, left:DefectCoordinateX, top:DefectCoordinateY}}></View>
+                          <View style={{...styles.circularPatch, left:DefectCoordinateX, top:DefectCoordinateY}}>
+                            <View style={{...styles.circle, left:"35%", top:"35%"}}></View>
+                          </View>
+                          
                       </ImageBackground>
                     </View> 
 
@@ -206,6 +209,13 @@ const styles = StyleSheet.create({
       backgroundColor: 'red',
       position: "absolute"
   },
+  circularPatch:{
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'lime',
+    opacity: 0.5
+},
   floatView: {
     position: 'absolute',
     width: '100%',
