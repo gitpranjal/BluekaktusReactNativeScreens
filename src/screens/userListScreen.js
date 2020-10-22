@@ -6,28 +6,28 @@ import { Dimensions } from 'react-native';
 import { withOrientation } from "react-navigation";
 
 
-async function getUserList() 
-{
-  let response = await fetch(
-                          "https://qualitylite.bluekaktus.com/api/bkquality/users/getUserList",
-                          {
-                            method: "POST",
-                            body: JSON.stringify({
-                              basicparams: {
-                                companyID: 1,
-                              //   userID: 13,
-                              },
+// async function getUserList() 
+// {
+//   let response = await fetch(
+//                           "https://qualitylite.bluekaktus.com/api/bkquality/users/getUserList",
+//                           {
+//                             method: "POST",
+//                             body: JSON.stringify({
+//                               basicparams: {
+//                                 companyID: 1,
+//                               //   userID: 13,
+//                               },
 
-                            }),
-                            headers: {
-                              "Content-Type": "application/json",
-                              Accept: "application/json",
-                            },
-                          }
-                        )
-  let data = await response.json()
-  return data;
-}
+//                             }),
+//                             headers: {
+//                               "Content-Type": "application/json",
+//                               Accept: "application/json",
+//                             },
+//                           }
+//                         )
+//   let data = await response.json()
+//   return data;
+// }
 
 const userListScreen =  () => {
 
@@ -40,7 +40,7 @@ const userListScreen =  () => {
     const [UserLastName, SetUserLastName] = useState("")
     const [EmailId, SetEmailId] = useState("")
     const [Phone, SetPhone] = useState("")
-    const [Location, SetRoleType] = useState("")
+    const [Password, SetPassword] = useState("")
 
     const roleNames = ["Edit Brand", "Edit Style", "Edit Size", "Edit Color", "Edit Company", "Edit Factory"]
     const [roles, SetRoles] = useState({"Edit Brand": false, "Edit Style": false, "Edit Color": false, "Edit Company": false, "Edit Factory": false})
@@ -127,7 +127,7 @@ const userListScreen =  () => {
       )
       .then(res => res.json())
       .then(body => {
-        console.log(body.result)
+        // console.log(body.result)
         SetUserList(body.result)
       })
 
@@ -140,7 +140,7 @@ const userListScreen =  () => {
                     <Text style={{color: "#00008b", marginVertical: 5, fontWeight: "bold"}}>Add new user</Text>
                 </View>
             </TouchableHighlight>
-            <View style={{marginTop: 50}}>
+            <View style={{marginTop: 20, marginBottom: 100}}>
 
             <FlatList 
                 // style={{flex: 1}}
@@ -191,12 +191,12 @@ const userListScreen =  () => {
                     
                     <View style={{marginTop: 25}}>
 
-                        <View style={{ ...styles.textInput, elevation: 10,  justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2}}>
+                        <View style={{ ...styles.textInput, elevation: 10,  justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2, borderRadius: 5}}>
                             <TextInput
                                 style= {{marginLeft: 4}}
                                 placeholder="First Name"
                                 maxLength={20}
-                                onBlur={Keyboard.dismiss}
+                                // onBlur={Keyboard.dismiss}
                                 value={UserFirstName}
                                 onChangeText={(newText) => {
                                     SetUserFirstName(newText)
@@ -205,12 +205,12 @@ const userListScreen =  () => {
                         </View>
                         
                         
-                        <View style={{ ...styles.textInput, elevation: 10,  justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2}}>
+                        <View style={{ ...styles.textInput, elevation: 10,  justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2, borderRadius: 5}}>
                             <TextInput
                                 style= {{marginLeft: 4}}
                             placeholder="Last Name"
                             maxLength={20}
-                            onBlur={Keyboard.dismiss}
+                            // onBlur={Keyboard.dismiss}
                             value={UserLastName}
                             onChangeText={(newText) => {
                                 SetUserLastName(newText)
@@ -219,12 +219,12 @@ const userListScreen =  () => {
                         </View>
 
                         {/* <Text style={{color:"white", right: "43%"}}>EMAIL ID</Text> */}
-                        <View style={{ ...styles.textInput, elevation: 10, justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2}}>
+                        <View style={{ ...styles.textInput, elevation: 10, justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2, borderRadius: 5}}>
                             <TextInput
                             style= {{marginLeft: 4}}
                             placeholder="Email Id"
                             maxLength={20}
-                            onBlur={Keyboard.dismiss}
+                            // onBlur={Keyboard.dismiss}
                             value={EmailId}
                             onChangeText={(newText) => {
                                 SetEmailId(newText)
@@ -233,29 +233,29 @@ const userListScreen =  () => {
                         </View>
 
                         {/* <Text style={{color:"white", right: "43%"}}>Phone Number</Text> */}
-                        <View style={{ ...styles.textInput, elevation: 10, justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2}}>
+                        <View style={{ ...styles.textInput, elevation: 10, justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2, borderRadius: 5}}>
                             <TextInput
                             style= {{marginLeft: 4}}
-                            placeholder="Phone Number"
+                            placeholder="Password"
                             maxLength={20}
-                            onBlur={Keyboard.dismiss}
-                            value={Phone}
+                            // onBlur={Keyboard.dismiss}
+                            value={Password}
                             onChangeText={(newText) => {
-                                SetPhone(newText)
+                                SetPassword(newText)
                             }}
                             />
                         </View>
 
                         {/* <Text style={{color:"white", right: "43%"}}>User Type</Text> */}
-                        <View style={{ ...styles.textInput, elevation: 10,  justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2}}>
+                        <View style={{ ...styles.textInput, elevation: 10,  justifyContent: 'center',  backgroundColor: 'white', margin: 7, height: 50,  width: 250, borderColor: "#F194FF", borderWidth:2, borderRadius: 5}}>
                             <TextInput
                             style= {{marginLeft: 4}}
-                            placeholder="Location"
+                            placeholder="Phone Number"
                             maxLength={20}
-                            onBlur={Keyboard.dismiss}
-                            value={Location}
+                            // onBlur={Keyboard.dismiss}
+                            value={Phone}
                             onChangeText={(newText) => {
-                                SetRoleType(newText)
+                                SetPhone(newText)
                             }}
                             />
                         </View>
@@ -357,7 +357,7 @@ const userListScreen =  () => {
                                   "userLname": UserLastName,
                                   "loginID": EmailId,
                                   "emailID": EmailId,
-                                  "loginPwd": "LOGINinHASHform",
+                                  "loginPwd": Password,
                                   "phoneNo": Phone.toString(),
                                   "mobileNo": Phone.toString(),
                                   "userRoleID": 4,
@@ -382,10 +382,52 @@ const userListScreen =  () => {
                         console.log("#### Request Object: ")
                         console.log(request)
 
+                        fetch(
+                          "https://qualitylite.bluekaktus.com/api/bkquality/users/saveUserDetails",
+                          {
+                            method: "POST",
+                            body: JSON.stringify({
+                              "basicparams": {
+                                "companyID": 1,
+                                "userID": 13
+                              },
+                              "userParams": {
+                                "companyID": 1,
+                                "userFname": UserFirstName,
+                                "userLname": UserLastName,
+                                "loginID": EmailId,
+                                "emailID": EmailId,
+                                "loginPwd": Password,
+                                "phoneNo": Phone.toString(),
+                                "mobileNo": Phone.toString(),
+                                "userRoleID": 4,
+                                "userPermissionsParams": {
+                                  "editBrand": (roles["Edit Brand"] === true) ? 1 : 0,
+                                  "editSize": (roles["Edit Size"] === true) ? 1 : 0,
+                                  "editStyle": (roles["Edit Style"] === true) ? 1 : 0,
+                                  "editColor": (roles["Edit Color"] === true) ? 1 : 0,
+                                  "editCompany": (roles["Edit Company"] === true) ? 1 : 0,
+                                  "editFactory": (roles["Edit Factory"] === true) ? 1 : 0
+                                }
+                              }
+                            }),
+                            headers: {
+                              "Content-Type": "application/json",
+                              Accept: "application/json",
+                            },
+                          }
+                        )
+                        .then(res => res.json())
+                        .then(body => {
+                          console.log(body)
+                          // SetUserList(body.result)
+                        })
+
                         SetUserAdditionModalVisible(!UserAdditionModalVisible);
                         SetUserFirstName("")
                         SetUserLastName("")
                         SetEmailId("")
+                        SetPassword("")
                         SetPhone("")
             
                     }}
