@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ImageCoordinates",
-    "slug": "ImageCoordinates",
+    "name": "BluekaktuAppScreens",
+    "slug": "BluekaktusAppScreens",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [

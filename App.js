@@ -4,12 +4,14 @@ import TextInputModal from './src/screens/TextInputModal';
 import HomeScreen from "./src/screens/HomeScreen";
 import ImageScreen from "./src/screens/ImageScreen"
 import ScrollableDefectsInfo from "./src/components/ScrollableDefectsInfo"
+import userListScreen from "./src/screens/userListScreen"
 const navigator = createStackNavigator(
   {
     Home: HomeScreen,
     ImageScreen: ImageScreen,
     TextInputModal: TextInputModal,
-    ScrollableDefectsInfo: ScrollableDefectsInfo
+    ScrollableDefectsInfo: ScrollableDefectsInfo,
+    userListScreen: userListScreen
   },
   {
     initialRouteName: "Home",

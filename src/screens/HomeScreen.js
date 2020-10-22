@@ -24,7 +24,12 @@ const HomeScreen = (props) => {
         }}
         title = "Go to scrollable defects screen"
     />
-    
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('userListScreen')
+        }}
+        title = "Go to userList screen"
+    />
   </View>
   )
 };
