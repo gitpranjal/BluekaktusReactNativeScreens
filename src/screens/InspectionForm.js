@@ -16,6 +16,7 @@ import { Dropdown } from 'react-native-material-dropdown'
 import Colors from "../../constants/colors"
 import { Dimensions } from 'react-native';
 import { TouchableOpacity } from "react-native";
+import { FlatList } from "react-native";
 
 
 const InspectionForm = () => {
@@ -54,6 +55,7 @@ const InspectionForm = () => {
     const [TotalCartons, SetTotalCartons] = useState("")
     const [MainDefect, SetMainDefect] = useState({})
     const [MainDefectExtent, SetMainDefectExtent] = useState({"critical": "", "major": "", "minor": ""})
+    const [DefectsSummary, SetDefectsSummary] = useState({"Total Critical Defect": "", "Total Major Defect": "", "Total Minor Defect": "", "Total Defect": "", "Defect Rate": ""})
 
 
     return (
@@ -118,8 +120,8 @@ const InspectionForm = () => {
                                 keyboardType = 'numeric'
                                 placeholderTextColor={"grey"}
                                 value={OfferedQuantity.toString()}
-                                onChangeText = {(newPackedQuantity) => {
-                                    SetOfferedQuantity(newPackedQuantity)
+                                onChangeText = {(newOfferedQuantity) => {
+                                    SetOfferedQuantity(newOfferedQuantity)
                                     SetExcessQuantity(OrderQuantity - newOfferedQuantity)
                                 }}
 
@@ -349,6 +351,42 @@ const InspectionForm = () => {
 
             </View>
 
+        
+            <View id="DefectsSummary" style={{ borderColor: Colors.primaryColor, borderWidth: 1, height: 0.35*screenHeight, marginVertical: 20, alignItems: "center"}}>
+                <FlatList
+                    data={Object.keys(DefectsSummary)}
+                    keyExtractor={(textInputField) => textInputField}
+                    style={{}}
+                    renderItem = {({item}) => {
+
+                    return (
+                        
+                        <View style={{flexDirection: "row", justifyContent: "center"}}>
+                            {/* <Text style={{alignSelf: "center", left: 0}}>{item}</Text> */}
+                            <View style={{...styles.textInput, marginHorizontal: 20, width: "70%"}}>
+                                <TextInput
+                                    style= {{marginLeft: 4, color: Colors.primaryColor}}
+                                    placeholder={item}
+                                    
+                                    keyboardType = 'numeric'
+                                    placeholderTextColor={"grey"}
+                                    maxLength={5}
+                                    // onBlur={Keyboard.dismiss}
+                                    value={DefectsSummary[item]}
+                                    onChangeText={(newVal) => {
+                                        var newDefectsSummary = {...DefectsSummary}
+                                        newDefectsSummary[item] = newVal
+                                        SetDefectsSummary(newDefectsSummary)
+                                        
+                                    }}
+                                />
+                        </View>
+                        </View>
+                    )
+
+                    }}
+                />
+            </View>
         </View>
 
         </ScrollView>
