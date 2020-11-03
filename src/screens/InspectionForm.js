@@ -1,0 +1,386 @@
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  View,
+  Keyboard,
+  ScrollView,
+  SafeAreaView
+} from "react-native";
+
+import SearchableDropdown from 'react-native-searchable-dropdown'
+import { Dropdown } from 'react-native-material-dropdown'
+
+import Colors from "../../constants/colors"
+import { Dimensions } from 'react-native';
+import { TouchableOpacity } from "react-native";
+
+
+const InspectionForm = () => {
+
+    const screenHeight = Dimensions.get('window').height
+    const screenWidth = Dimensions.get('window').width
+
+    const AQIlevels = [
+        //name key is must.It is to show the text in front
+        { id: 1, value: 1 },
+        { id: 2, value: 2.5},
+        { id: 3, value: 5},
+        { id: 4, value: 6}
+      ]
+
+    const MainDefectsList = [
+        {id: 1, value: "Broken Button"},
+        {id: 2, value: "Broken Stitch"},
+        {id: 3, value: "Holes"},
+        {id: 4, value: "Pen Mark"}
+    ]
+    
+    const [BuyerName, SetBuyerName] = useState("")
+    const [AqiIndex, SetAqiIndex] =useState("")
+    const [OrderQuantity, SetOrderQuantity] = useState("")
+    const [OfferedQuantity, SetOfferedQuantity] = useState("")
+    const [ExcessQuantity, SetExcessQuantity] = useState("")
+    const [factoryRepresentative, SetFactoryRepresentative] = useState("")
+
+    const [PackedQuantity, SetPackedQuantity] = useState("")
+    const [SampleSize, SetSampleSize] = useState("")
+    const [Fg1Quantity, SetFg1Quantity] = useState("")
+    const [Fg2Quantity, SetFg2Quantity] = useState("")
+    const [CartonSampleSize, SetCartonSampleSize] = useState("")
+    const [CartonSelected, SetCartonSelected] = useState("")
+    const [TotalCartons, SetTotalCartons] = useState("")
+    const [MainDefect, SetMainDefect] = useState({})
+    const [MainDefectExtent, SetMainDefectExtent] = useState({"critical": "", "major": "", "minor": ""})
+
+
+    return (
+        <ScrollView style={{marginHorizontal: 10, alignContent: "center"}}
+            keyboardShouldPersistTaps="always"
+        >
+            <View id="basicInfo" style={{height: 0.6*screenHeight}}>
+
+                <View id="buyerTextInput" style={{...styles.textInput}}>
+                    <TextInput 
+                        placeholder="Buyer Name"
+                        style={{marginLeft: 2}}
+                        placeholderTextColor={"grey"}
+                        value={BuyerName}
+                        onChangeText = {(newChangedText) => {SetBuyerName(newChangedText)}}
+
+                    />
+                </View>
+
+
+                <View id=" AQI Index" style={{borderColor: Colors.inactiveColor, borderWidth:3, borderRadius: 5, justifyContent: "center", marginVertical: 10, height: 55}}>
+                    <Dropdown 
+                        data={AQIlevels}
+                          style={{}}
+                          label="AQI Index"
+                          pickerStyle={{borderBottomColor:'transparent',borderWidth: 0}}
+                          onChangeText={(item) => {
+                            console.log(item)
+                            SetAqiIndex(item)
+                          }}
+
+                    />
+                </View>
+
+
+  
+                
+                <View id="PO Wise Quantity" style={{borderColor: Colors.primaryColor, borderWidth: 1, height: 0.29*screenHeight, marginTop: 15, borderRadius: 5, justifyContent: "center"}}>
+                    
+
+                    <View id="PO Heading" style={{...styles.openButton, marginLeft: 10, marginRight: 55, backgroundColor: Colors.inactiveColor, alignContent: "center"}}>
+                        <Text style={{ color: "white", alignSelf: "center"}}>PO Number: 256</Text>
+                    </View>
+
+                    <View id="OrderOfferQuantities" style={{flexDirection: "row"}}>
+                        <View id="Ordered Quantity" style={{...styles.textInput, marginHorizontal: 10, width: "40%"}}>
+                            <TextInput 
+                                placeholder="Order Quantity"
+                                keyboardType = 'numeric'
+                                placeholderTextColor={"grey"}
+                                value={OrderQuantity.toString()}
+                                onChangeText = {(newOrderQuantity) => {
+                                    SetOrderQuantity(newOrderQuantity)
+                                    SetExcessQuantity(newOrderQuantity - OfferedQuantity)
+                                }}
+
+                            />
+                        </View>
+                        <View id="Offered Quantity" style={{...styles.textInput, width: "40%"}}>
+                            <TextInput 
+                                placeholder="Offered Quantity"
+                                keyboardType = 'numeric'
+                                placeholderTextColor={"grey"}
+                                value={OfferedQuantity.toString()}
+                                onChangeText = {(newPackedQuantity) => {
+                                    SetOfferedQuantity(newPackedQuantity)
+                                    SetExcessQuantity(OrderQuantity - newOfferedQuantity)
+                                }}
+
+                            />
+                        </View>
+                            
+                    </View>
+
+                    <View id="Excess Quantity" style={{...styles.openButton, marginLeft: 10, marginRight: 55, backgroundColor: "white", borderColor: Colors.inactiveColor, borderWidth: 3}}>
+                        <Text style={{ color: Colors.inactiveColor}}>ExcessQuantity: {OrderQuantity - OfferedQuantity}</Text>
+                    </View>
+                    
+                                
+                   <TouchableHighlight
+                        style={{ ...styles.openButton, backgroundColor: Colors.primaryColor, marginTop: 15, marginLeft: 10, marginRight: 55}}
+                        onPress={() => {
+                            console.log("Add button pressed")
+                        }}
+                   >
+                       <Text style={{...styles.textStyle}}>Add</Text>
+
+                   </TouchableHighlight>
+                </View>
+                
+                <View id="factoryRepresentative" style={{...styles.textInput}}>
+                    <TextInput 
+                        placeholder="Factory representative person"
+                        style={{marginLeft: 2}}
+                        placeholderTextColor={"grey"}
+                        value={factoryRepresentative}
+                        onChangeText = {(newChangedText) => {SetFactoryRepresentative(newChangedText)}}
+                    />
+                </View>
+
+                
+            </View>
+
+
+
+
+        <View id="inspectionParams" style={{height: 0.45*screenHeight, borderWidth: 1, borderColor: Colors.primaryColor}}>
+            <View id="QuanityParams" style={{flexDirection: "row", alignSelf: "center", marginVertical: 20}}>
+                <Text style={{marginHorizontal: 10}}>PR Quantity 10</Text>
+                <Text style={{marginHorizontal: 10}}>Cut Quantity 0</Text>
+                <Text style={{marginHorizontal: 10}}>Done Quantity 0</Text>
+            </View>
+
+            <View id="PackedSampledSize" style={{flexDirection: "row", alignSelf: "center", marginVertical: 20}}>
+                {/* <View id="Offered Quantity" style={{...styles.textInput, width: "40%"}}> */}
+                    <TextInput 
+                        placeholder="Packed Quantity"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, marginHorizontal: 20, width: "40%"}}
+                        value={PackedQuantity.toString()}
+                        onChangeText = {(newPackedQuantity) => {
+                            SetPackedQuantity(newPackedQuantity)
+                            if(newPackedQuantity != "")
+                            {
+                                var NewSampleSize = (100 - parseInt(newPackedQuantity)).toString()
+                                SetSampleSize(NewSampleSize)
+                            }
+                            else
+                                SetSampleSize("")
+                            
+                        }}
+
+                    />
+                    <TextInput 
+                        placeholder="Sample Size"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, width: "40%", marginHorizontal: 20}}
+                        value={SampleSize.toString()}
+                        onChangeText = {(newSampleSize) => {
+                            SetSampleSize(newSampleSize)
+                        }}
+
+                    />
+                {/* </View> */}
+                
+            </View>
+
+            <View id="fg1fg2" style={{flexDirection: "row", alignSelf: "center", marginVertical: 20}}>
+            
+                    <TextInput 
+                        placeholder="FG1 Quantity"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, marginHorizontal: 20, width: "40%"}}
+                        value={Fg1Quantity.toString()}
+                        onChangeText = {(newFg1Quantity) => {
+                            SetFg1Quantity(newFg1Quantity)
+                            if(newFg1Quantity != "")
+                            {
+                                var NewFg2Quantity = (100 - parseInt(newFg1Quantity)).toString()
+                                SetFg2Quantity(NewFg2Quantity)
+                            }
+                            else
+                                SetFg2Quantity("")
+                        }}
+
+                    />
+                    <TextInput 
+                        placeholder="FG2 Quantity"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, width: "40%", marginHorizontal: 20}}
+                        value={Fg2Quantity.toString()}
+                        // editable={false}
+                        // onChangeText = {(newSampleSize) => {
+                        //     SetSampleSize(newSampleSize)
+                        // }}
+
+                    /> 
+            </View>
+
+            <View id="cartonInfo" style={{flexDirection: "row", alignSelf: "center", marginVertical: 20}}>
+                <TextInput 
+                    placeholder="Carton Sample Size"
+                    keyboardType = 'numeric'
+                    placeholderTextColor={"grey"}
+                    style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, marginHorizontal: 20, width: "40%"}}
+                    value={CartonSampleSize.toString()}
+                    onChangeText = {(newCartonSampleSize) => {
+                        SetCartonSampleSize(newCartonSampleSize)
+                    }}
+
+                />
+                <TextInput 
+                    placeholder="Carton Selected"
+                    keyboardType = 'numeric'
+                    placeholderTextColor={"grey"}
+                    style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, width: "40%", marginHorizontal: 20}}
+                    value={CartonSelected.toString()}
+                    // editable={false}
+                    onChangeText = {(newEnteredCartonNumber) => {
+                        SetCartonSelected(newEnteredCartonNumber)
+                    }}
+
+                /> 
+
+            </View>
+
+            <View id="totalCartons" style={{flexDirection: "row", alignSelf: "center", marginVertical: 20}}>
+                <TextInput 
+                    placeholder="Insert total cartons"
+                    keyboardType = 'numeric'
+                    placeholderTextColor={"grey"}
+                    style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, marginHorizontal: 20, width: "90%"}}
+                    value={TotalCartons.toString()}
+                    onChangeText = {(newTotalCartons) => {
+                        SetTotalCartons(newTotalCartons)
+                    }}
+                />
+            </View>
+
+     </View>
+
+
+           
+        
+        <View id="defectsInfo" style={{height: 0.8*screenHeight}}>
+
+            <View id="mainDefect" style={{borderColor: Colors.primaryColor, borderWidth: 1, height: 0.2*screenHeight, marginVertical: 20, alignItems: "center"}}>
+                <View id=" Main defect dropdown" style={{borderColor: Colors.inactiveColor, borderWidth:3, borderRadius: 5, width: "90%", justifyContent: "center", marginVertical: 20, height: 53}}>
+                    <Dropdown 
+                        data={MainDefectsList}
+                          style={{}}
+                          label="Select defect"
+                          pickerStyle={{borderBottomColor:'transparent',borderWidth: 0}}
+                          onChangeText={(item) => {console.log(item)}}
+
+                    />
+                </View>
+
+                <View id="defectExtent" style={{flexDirection: "row", alignSelf: "center", marginVertical: 10}}>
+                    <TextInput 
+                        placeholder="Critical"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, marginHorizontal: 10, width: "17%"}}
+                        value={MainDefectExtent.critical}
+                        onChangeText = {(value) => {
+                            var newMainDefectExtent = {"critical": value, "major": MainDefectExtent.major, "minor": MainDefectExtent.minor}
+                            SetMainDefectExtent(newMainDefectExtent)
+                        }}
+
+                    />
+                    <TextInput 
+                        placeholder="Major"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, width: "17%", marginHorizontal: 10}}
+                        value={MainDefectExtent.major}
+                        // editable={false}
+                        onChangeText = {(value) => {
+                            var newMainDefectExtent = {"critical": MainDefectExtent.critical, "major": value, "minor": MainDefectExtent.minor}
+                            SetMainDefectExtent(newMainDefectExtent)
+                        }}
+
+                    /> 
+                    <TextInput 
+                        placeholder="Minor"
+                        keyboardType = 'numeric'
+                        placeholderTextColor={"grey"}
+                        style={{borderBottomColor: Colors.primaryColor, borderBottomWidth: 2, width: "17%", marginHorizontal: 10}}
+                        value={MainDefectExtent.minor}
+                        // editable={false}
+                        onChangeText = {(value) => {
+                            var newMainDefectExtent = {"critical": MainDefectExtent.critical,"major": MainDefectExtent.major, "minor": value}
+                            SetMainDefectExtent(newMainDefectExtent)
+                        }}
+                    /> 
+
+                    <TouchableHighlight
+                        style={{ ...styles.openButton, backgroundColor: Colors.primaryColor, marginHorizontal: 10, width: "20%"}}
+                        onPress={() => {
+                            console.log("Add button pressed")
+                        }}
+                    >
+                       <Text style={{...styles.textStyle}}>Add</Text>
+
+                   </TouchableHighlight>
+
+                </View>
+
+            </View>
+
+        </View>
+
+        </ScrollView>
+    )
+
+}
+
+
+const styles = StyleSheet.create({
+    textInput: {
+       
+        fontWeight:"bold", 
+        justifyContent: 'center', 
+        marginVertical: 7, 
+        height: 40,  
+        borderColor: Colors.inactiveColor, 
+        borderWidth:3, 
+        borderRadius: 5},
+
+    textStyle: {
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center"
+          },
+
+    openButton: {
+            backgroundColor: Colors.primaryColor,
+            borderRadius: 10,
+            padding: 10,
+            elevation: 10,
+ 
+          }
+})
+export default InspectionForm
+

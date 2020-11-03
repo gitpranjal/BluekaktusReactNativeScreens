@@ -5,13 +5,15 @@ import HomeScreen from "./src/screens/HomeScreen";
 import ImageScreen from "./src/screens/ImageScreen"
 import ScrollableDefectsInfo from "./src/components/ScrollableDefectsInfo"
 import userListScreen from "./src/screens/userListScreen"
+import InspectionForm from "./src/screens/InspectionForm"
 const navigator = createStackNavigator(
   {
     Home: HomeScreen,
     ImageScreen: ImageScreen,
     TextInputModal: TextInputModal,
     ScrollableDefectsInfo: ScrollableDefectsInfo,
-    userListScreen: userListScreen
+    userListScreen: userListScreen,
+    InspectionForm: InspectionForm
   },
   {
     initialRouteName: "Home",

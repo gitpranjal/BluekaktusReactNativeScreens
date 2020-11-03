@@ -30,6 +30,12 @@ const HomeScreen = (props) => {
         }}
         title = "Go to userList screen"
     />
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('InspectionForm')
+        }}
+        title = "Go to InspectionForm"
+    />
   </View>
   )
 };
