@@ -18,6 +18,7 @@ import Colors from "../../constants/colors"
 import { Dimensions } from 'react-native';
 import { TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
+import { SearchBar } from "react-native-elements"
 
 const screenHeight = Dimensions.get('window').height
 const screenWidth = Dimensions.get('window').width
@@ -32,6 +33,7 @@ const BulkOrderListScreen = () => {
     const [FactoryList, SetFactoryList] = useState([])
     const [BulkOrderList, SetBulkOrderList] = useState([])
     const [Factory, SetFactory] = useState({})
+    const [SearchBarText, SetSearchBarText] = useState("")
 
     useEffect(() => {
 
@@ -163,7 +165,39 @@ const BulkOrderListScreen = () => {
               underlineColorAndroid="transparent"
               //To remove the underline from the android input
             />
+
+            <View>
+
+            <SearchBar
+              placeholder="Search by order brand or style"
+              placeholderTextColor={Colors.primaryColor}
+            
+              containerStyle={{
+                backgroundColor: "#f6f5f5",
+                borderBottomColor: "transparent",
+                borderTopColor: "transparent",
+                
+              }}
+              inputContainerStyle={{
+                backgroundColor: "#b5b5b580",
+                marginHorizontal: -5,
+                marginVertical: 10,
+                width: Dimensions.get("window").width/1.1
+                
+              }}
+              editable={true}
+              value={SearchBarText}
+              onChangeText={(text) => {
+                SetSearchBarText(text)
+                // searchBarFilter(text)
+              }}
+            />
+
+            </View>
+
+            
         </View>
+
     )
 
 
