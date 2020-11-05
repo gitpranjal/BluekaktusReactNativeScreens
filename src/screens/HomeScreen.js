@@ -36,6 +36,12 @@ const HomeScreen = (props) => {
         }}
         title = "Go to InspectionForm"
     />
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('BulkOrderListScreen')
+        }}
+        title = "Go to BulkOrderList screen"
+    />
   </View>
   )
 };
