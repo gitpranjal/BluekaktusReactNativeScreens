@@ -42,6 +42,18 @@ const HomeScreen = (props) => {
         }}
         title = "Go to BulkOrderList screen"
     />
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('CameraScreen')
+        }}
+        title = "Go to Camera screen"
+    />
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('ImageOpeningButtonScreen')
+        }}
+        title = "Go to ImageOpeningButtonScreen screen"
+    />
   </View>
   )
 };

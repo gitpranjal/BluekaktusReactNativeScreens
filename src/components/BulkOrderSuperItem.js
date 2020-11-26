@@ -11,7 +11,7 @@ import {
   TouchableNativeFeedback,
   Switch,
 } from "react-native";
-import Colors from "../constants/colors";
+import Colors from "../../constants/colors";
 
 class BulkOrderSuperItem extends React.Component {
   constructor(props) {

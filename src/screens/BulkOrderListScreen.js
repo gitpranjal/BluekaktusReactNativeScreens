@@ -20,6 +20,8 @@ import { TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
 import { SearchBar } from "react-native-elements"
 
+import BulkOrderSuperItem from "../components/BulkOrderSuperItem"
+
 const screenHeight = Dimensions.get('window').height
 const screenWidth = Dimensions.get('window').width
 
@@ -34,6 +36,8 @@ const BulkOrderListScreen = () => {
     const [BulkOrderList, SetBulkOrderList] = useState([])
     const [Factory, SetFactory] = useState({})
     const [SearchBarText, SetSearchBarText] = useState("")
+    const [FilteredList, SetFilteredList] = useState([])
+    const [SelectedOrder, SetSelectedOrder] = useState({})
 
     useEffect(() => {
 
@@ -104,6 +108,7 @@ const BulkOrderListScreen = () => {
           console.log(newBulkOrderList)
           
           SetBulkOrderList(newBulkOrderList)
+          SetFilteredList(newBulkOrderList)
         })
         .catch((error) => console.log(error)); //to catch the errors if any
   
@@ -168,30 +173,74 @@ const BulkOrderListScreen = () => {
 
             <View>
 
-            <SearchBar
-              placeholder="Search by order brand or style"
-              placeholderTextColor={Colors.primaryColor}
-            
-              containerStyle={{
-                backgroundColor: "#f6f5f5",
-                borderBottomColor: "transparent",
-                borderTopColor: "transparent",
+              <SearchBar
+                placeholder="Search by order brand or style"
+                placeholderTextColor={Colors.primaryColor}
+              
+                containerStyle={{
+                  backgroundColor: "#f6f5f5",
+                  borderBottomColor: "transparent",
+                  borderTopColor: "transparent",
+                  
+                }}
+                inputContainerStyle={{
+                  backgroundColor: "#b5b5b580",
+                  marginHorizontal: -7,
+                  marginVertical: 10,
+                  width: Dimensions.get("window").width/1.06
+                  
+                }}
+                editable={true}
+                value={SearchBarText}
+                onChangeText={(text) => {
+                  SetSearchBarText(text)
+                  // searchBarFilter(text)
+                }}
+              />
+
+              <View id="Bulk order list" style={{backgroundColor: "#f0f8ff", height: 0.74*Dimensions.get("window").height}}>
                 
-              }}
-              inputContainerStyle={{
-                backgroundColor: "#b5b5b580",
-                marginHorizontal: -5,
-                marginVertical: 10,
-                width: Dimensions.get("window").width/1.1
-                
-              }}
-              editable={true}
-              value={SearchBarText}
-              onChangeText={(text) => {
-                SetSearchBarText(text)
-                // searchBarFilter(text)
-              }}
-            />
+              
+
+                <FlatList 
+                    data={FilteredList}
+                    keyExtractor={(BulkOrderData) => BulkOrderData.orderID.toString()}
+                    renderItem={({item}) => {
+                    return (
+                    
+
+                    <TouchableOpacity
+                      
+                      onPress={() => {
+                        SetSelectedOrder({
+                          "brandID": item.brandID,
+                          "brandName": item.brandName,
+                          "orderID": item.orderID,
+                          "orderNo": item.orderNo,
+                          "styleID": item.styleID,
+                          "styleNo": item.styleNo
+
+                        })
+
+                      }}
+                    
+                    >
+
+                      <BulkOrderSuperItem
+                        brandName={item.brandName}
+                        orderNo={item.orderNo}
+                        styleNo={item.styleNo}
+                        brandID={item.brandID}
+                        orderID={item.orderID}
+                        styleID={item.styleID}
+                      />
+                    </TouchableOpacity>
+                      
+                    )
+                    }}
+                />
+
+              </View>
 
             </View>
 
