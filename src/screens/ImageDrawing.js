@@ -15,19 +15,22 @@ import {
 import ExpoPixi from 'expo-pixi'
 import {captureRef as takeSnapShotAsync} from "react-native-view-shot"
 
+import Slider from 'react-native-slider'
 
-
-const ImageDrawing = () => {
+const ImageDrawing = (props) => {
 
   
    const [CurrentUri, SetCurrentUri] = useState("bhupp bhosdike")
    const [Color, SetColor] = useState({colorName: "red", colorVal: 0xffff0000})
    const [MarkerWidth, SetMarkerWidth] = useState(5)
+   const [BackgroundImageUri, SetBackgroundImageUri] = useState("https://asia.olympus-imaging.com/content/000107507.jpg")
+   
 
     // const color = 0xff0000;
     const width = 5;
     const alpha = 0.5;
     var sketch = ""
+    var drawingBoard = ""
     const onChange = async ({ width, height }) => {
       const options = {
         format: 'jpg', /// PNG because the view has a clear background
@@ -46,12 +49,13 @@ const ImageDrawing = () => {
 
       <ScrollView style={styles.container}>
         <ImageBackground 
-          source={{uri: "https://asia.olympus-imaging.com/content/000107507.jpg"}} 
+          source={{uri: BackgroundImageUri}} 
           style={{width: "100%", height: 400}}
           ref={ref => sketch = ref}
           >
           <ExpoPixi.Sketch
             strokeColor={Color.colorVal}
+            ref={ref => drawingBoard = ref}
             strokeWidth={MarkerWidth}
             strokeAlpha={alpha}
             
@@ -74,7 +78,29 @@ const ImageDrawing = () => {
           }}
 
         />
-         
+         <View style={{flexDirection: "row", alignSelf: "center"}}>
+          <Slider
+            style={{width: 200, height: 40, alignSelf: "center"}}
+            minimumValue={2}
+            maximumValue={20}
+            value={MarkerWidth}
+            minimumTrackTintColor="#008b8b"
+            maximumTrackTintColor="#c0c0c0"
+            thumbTintColor="#4b0082"
+            onValueChange={(value) => SetMarkerWidth(value)}
+          />
+
+          <TouchableOpacity
+            style={{borderWidth: 3, borderColor: "grey", width: 80, height: 30, alignItems: "center", justifyContent: "center", marginLeft: "10%", borderRadius: 5}}
+            onPress={() => {
+              drawingBoard.stage.removeChildren()
+              drawingBoard.renderer._update()
+            }}
+          >
+            <Text style={{color: "grey", fontSize: 12, fontWeight: "bold"}}>Refresh</Text>
+          </TouchableOpacity>
+           
+         </View> 
          
 
         <TouchableOpacity

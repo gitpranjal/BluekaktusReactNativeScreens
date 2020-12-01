@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 8220,
-  "expoServerNgrokUrl": "https://w6-qr7.anonymous.bluekaktusscreens.exp.direct",
-  "packagerNgrokUrl": "https://packager.w6-qr7.anonymous.bluekaktusscreens.exp.direct",
-  "ngrokPid": 8994,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }
