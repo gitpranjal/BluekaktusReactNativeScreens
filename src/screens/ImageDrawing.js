@@ -7,19 +7,24 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
-  Text
+  Text,
+  FlatList,
 } from 'react-native';
+
 
 import ExpoPixi from 'expo-pixi'
 import {captureRef as takeSnapShotAsync} from "react-native-view-shot"
-import { TouchableHighlight } from 'react-native-gesture-handler';
+
 
 
 const ImageDrawing = () => {
 
+  
    const [CurrentUri, SetCurrentUri] = useState("bhupp bhosdike")
+   const [Color, SetColor] = useState({colorName: "red", colorVal: 0xffff0000})
+   const [MarkerWidth, SetMarkerWidth] = useState(5)
 
-    const color = 0xff0000;
+    // const color = 0xff0000;
     const width = 5;
     const alpha = 0.5;
     var sketch = ""
@@ -46,8 +51,8 @@ const ImageDrawing = () => {
           ref={ref => sketch = ref}
           >
           <ExpoPixi.Sketch
-            strokeColor={color}
-            strokeWidth={width}
+            strokeColor={Color.colorVal}
+            strokeWidth={MarkerWidth}
             strokeAlpha={alpha}
             
             style={{ flex: 1 }}
@@ -55,6 +60,23 @@ const ImageDrawing = () => {
             // onChange={onChange}
           />
         </ImageBackground>
+        <FlatList 
+          data={[{colorName: "blue", colorVal: 0xff0000ff}, {colorName: "green", colorVal: 0xff00ff00},
+                 {colorName: "red", colorVal: 0xffff0000},{colorName:"yellow", colorVal: 0xffffff00}]}
+          keyExtractor={(colorObj) => colorObj.colorName} 
+          style={{marginVertical: 10, alignSelf: "center"}} 
+          contentContainerStyle={{flexDirection: "row"}}
+          renderItem={({item}) => {
+            return <TouchableOpacity style={{width: item.colorName == Color.colorName? 25*1.2 : 25, height: item.colorName == Color.colorName? 25*1.2 :25, backgroundColor: item.colorName, marginHorizontal: 2}}
+                      onPress={() => SetColor(item)}
+                    >
+                    </TouchableOpacity>
+          }}
+
+        />
+         
+         
+
         <TouchableOpacity
           style={{width: 200, height: 50, backgroundColor: "blue", borderRadius: 7, alignItems: "center", justifyContent: "center", alignSelf: "center", marginVertical: 10}}
           onPress={onChange}
@@ -82,7 +104,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 10,
     backgroundColor: '#ecf0f1',
-  }
+  },
+  
 })
 
 export default ImageDrawing
