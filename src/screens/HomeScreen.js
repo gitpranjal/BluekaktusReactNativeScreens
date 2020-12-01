@@ -54,6 +54,12 @@ const HomeScreen = (props) => {
         }}
         title = "Go to ImageOpeningButtonScreen screen"
     />
+    <Button
+        onPress = {() => {
+          props.navigation.navigate('ImageDrawing')
+        }}
+        title = "Go to ImageDrawing screen"
+    />
   </View>
   )
 };

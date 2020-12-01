@@ -9,6 +9,7 @@ import InspectionForm from "./src/screens/InspectionForm"
 import BulkOrderListScreen from "./src/screens/BulkOrderListScreen"
 import CameraScreen from "./src/screens/CameraScreen"
 import ImageOpeningButtonScreen from "./src/screens/ImageOpeningButtonScreen"
+import ImageDrawing from "./src/screens/ImageDrawing"
 
 
 
@@ -22,7 +23,8 @@ const ScreenNavigator = createStackNavigator(
       InspectionForm: InspectionForm,
       BulkOrderListScreen: BulkOrderListScreen,
       CameraScreen: CameraScreen,
-      ImageOpeningButtonScreen: ImageOpeningButtonScreen
+      ImageOpeningButtonScreen: ImageOpeningButtonScreen,
+      ImageDrawing: ImageDrawing
     },
     {
       initialRouteName: "Home",
