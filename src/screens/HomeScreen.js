@@ -60,6 +60,12 @@ const HomeScreen = (props) => {
         }}
         title = "Go to ImageDrawing screen"
     />
+     <Button
+        onPress = {() => {
+          props.navigation.navigate('GeneratedCode')
+        }}
+        title = "Go to Generated code screen"
+    />
   </View>
   )
 };

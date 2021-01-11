@@ -10,6 +10,7 @@ import BulkOrderListScreen from "./src/screens/BulkOrderListScreen"
 import CameraScreen from "./src/screens/CameraScreen"
 import ImageOpeningButtonScreen from "./src/screens/ImageOpeningButtonScreen"
 import ImageDrawing from "./src/screens/ImageDrawing"
+import GeneratedCode from './src/screens/GeneratedCode';
 
 
 
@@ -24,7 +25,8 @@ const ScreenNavigator = createStackNavigator(
       BulkOrderListScreen: BulkOrderListScreen,
       CameraScreen: CameraScreen,
       ImageOpeningButtonScreen: ImageOpeningButtonScreen,
-      ImageDrawing: ImageDrawing
+      ImageDrawing: ImageDrawing,
+      GeneratedCode: GeneratedCode
     },
     {
       initialRouteName: "Home",
