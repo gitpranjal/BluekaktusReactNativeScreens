@@ -11,7 +11,6 @@ import {
 } from "react-native";
 
 import SearchableDropdown from 'react-native-searchable-dropdown'
-import { Dropdown } from 'react-native-material-dropdown'
 
 import Colors from "../../constants/colors"
 import { Dimensions } from 'react-native';

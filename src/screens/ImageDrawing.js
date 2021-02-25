@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 
 
-import ExpoPixi from 'expo-pixi'
-import {captureRef as takeSnapShotAsync} from "react-native-view-shot"
+//import ExpoPixi from 'expo-pixi'
+//import {captureRef as takeSnapShotAsync} from "react-native-view-shot"
 
-import Slider from 'react-native-slider'
+//import Slider from 'react-native-slider'
 
 const ImageDrawing = (props) => {
 
