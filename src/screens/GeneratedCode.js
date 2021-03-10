@@ -6,6 +6,10 @@ import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
 import { FloatingLabelInput } from "react-native-floating-label-input"
+import ModalDropdown from 'react-native-modal-dropdown'
+import styles from "../../assets/styles"
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const screenFunctions = {"frameSentence": (FieldsObjectList) => {
         var sentence = ""
@@ -42,13 +46,56 @@ const screenFunctions = {"frameSentence": (FieldsObjectList) => {
       
     
     }
+
+const storeData = async (key, value) => {
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem(key, jsonValue)
+    console.log("######## stored key "+key+" with value #######")
+  } catch (e) {
+    // saving error
+    console.log("################ Error saving value to asysync storage ###############")
+    console.log(e)
+  }
+}
+
+const getData = async (key) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key)
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    console.log("########### Got data from async storage ############")
+    console.log(jsonValue)
+  } catch(e) {
+    console.log("################ Error getting value from asysync storage ###############")
+    console.log(e)
+  }
+}
+
 const GeneratedCode = () => {
   const [Sentence, SetSentence] = useState("")
-  const [FieldList, SetFieldList] = useState({"brand":"","orderNo":"","orderQuantity":"","offeredQuantity":"","excessQuantity":"","factoryRepresentative":"Babu Rao Apte","packedQty":"","sampleSize":"","cartonSampleSize":"","CartonSelected":"","TotalCartons":"","columnB_id_0":"","columnC_id_0":"","columnB_id_1":"","columnC_id_1":"","mainCritical":"","mainMajor":"","mainMinor":"","mean":"","median":"","MiscellaneousDefect":"","missCritical":"","missMajor":"","missMinor":""})
-  const [DropdownList, SetDropdownList] = useState({"AqlIndex":{"SelectedValue":"","ValuesListFunction":"getAqlList","ValuesListUrl":"","ValuesList":[{"id":"-1","name":"no values found"}]},"Factory":{"SelectedValue":"","ValuesListFunction":"","ValuesListUrl":"","ValuesList":[{"id":"-1","name":"no values found"}]},"MainDefect":{"SelectedValue":"","ValuesListFunction":"getMaindefectsList","ValuesListUrl":"","ValuesList":[{"id":"-1","name":"no values found"}]},"randomDropDown":{"SelectedValue":"","ValuesListUrl":"","ValuesList":[{"id":"-1","name":"no values found"}]}})
+  const [FieldList, SetFieldList] = useState({"brand":"","orderNo":"","orderQuantity":"","offeredQuantity":"","excessQuantity":"","factoryRepresentative":"Babu Rao Apte","packedQty":"","sampleSize":"","cartonSampleSize":"","CartonSelected":"","TotalCartons":"","columnZ_id_0":"","columnC_id_0":"","columnZ_id_1":"","columnC_id_1":"","mainCritical":"","mainMajor":"","mainMinor":"","mean":"","median":"","MiscellaneousDefect":"","missCritical":"","missMajor":"","missMinor":""})
+  const [DropdownList, SetDropdownList] = useState({"AqlIndex":{"SelectedValue":"","ValuesListFunction":"getAqlList","ValuesListUrl":"","ValuesList":[{"id":"1","name":"option1"},{"id":"2","name":"option2"}]},"Factory":{"SelectedValue":"","ValuesListFunction":"","ValuesListUrl":"","ValuesList":[{"id":"1","name":"option1"},{"id":"2","name":"option2"}]},"columnB_id_0":{"SelectedValue":"","ValuesListFunction":"","ValuesListUrl":"","ValuesList":[{"id":"1","name":"option1"},{"id":"2","name":"option2"}]},"columnB_id_1":{"SelectedValue":"","ValuesListFunction":"","ValuesListUrl":"","ValuesList":[{"id":"1","name":"option1"},{"id":"2","name":"option2"}]},"MainDefect":{"SelectedValue":"","ValuesListFunction":"getMaindefectsList","ValuesListUrl":"","ValuesList":[{"id":"1","name":"option1"},{"id":"2","name":"option2"}]},"randomDropDown":{"SelectedValue":"","ValuesListUrl":"","ValuesList":[{"id":"1","name":"option1"},{"id":"2","name":"option2"}]}})
   const [RadioButtonList, SetRadioButtonList] = useState({"Inspection Type":"","columnD_id_0":"","columnD_id_1":"","Result":""})
-  const [HybridDataObjects, SetHybridDataObjects] = useState({"checkList1":[{"id":"-1","columnA":"Column A","columnB":"Column B","columnZ":"Column Z","columnC":"Column C","columnD":"columnD"},{"id":"0","columnA":"Value 1","columnB":"INPUT:textInputField:columnB_id_0","columnZ":"Value Z1","columnC":"INPUT:textInputField:columnC_id_0","columnD":"INPUT:radioButton:columnD_id_0"},{"id":"1","columnA":"Value 2","columnB":"INPUT:textInputField:columnB_id_1","columnZ":"ValueZ2","columnC":"INPUT:textInputField:columnC_id_1","columnD":"INPUT:radioButton:columnD_id_1"}],"Main Defect":[{"id":"-1","MainDefect":"Main defect name","mainCritical":"Critical","mainMajor":"Major","mainMinor":"Minor","mean":"Mean","median":"Median"}],"Miss Defect":[{"id":"-1","MiscellaneousDefect":"Miscellaneous Defect","missCritical":"Critical","missMajor":"Major","missMinor":"Minor","randomDropDown":"A random value"}]})
+  const [HybridDataObjects, SetHybridDataObjects] = useState({"checkList1":[{"id":"-1","columnA":"Column A","columnB":"Column B","columnZ":"Column Z","columnC":"Column C","columnD":"columnD"},{"id":"0","columnA":{"type":"textField","value":"Value 1"},"columnB":{"type":"dropdown","variableName":"columnB_id_0"},"columnZ":{"type":"textInputField","variableName":"columnZ_id_0"},"columnC":{"type":"textInputField","variableName":"columnC_id_0"},"columnD":{"type":"radioButton","variableName":"columnD_id_0","options":[{"id":1,"name":"Ok"},{"id":2,"name":"Not Ok"},{"id":3,"name":"NA"}]}},{"id":"1","columnA":{"type":"textField","value":"Value 2"},"columnB":{"type":"dropdown","variableName":"columnB_id_1"},"columnZ":{"type":"textInputField","variableName":"columnZ_id_1"},"columnC":{"type":"textInputField","variableName":"columnC_id_1"},"columnD":{"type":"radioButton","variableName":"columnD_id_1","options":[{"id":1,"name":"Ok"},{"id":2,"name":"Not Ok"},{"id":3,"name":"NA"}]}}],"Main Defect":[{"id":"-1","MainDefect":"Main defect name","mainCritical":"Critical","mainMajor":"Major","mainMinor":"Minor","mean":"Mean","median":"Median"}],"Miss Defect":[{"id":"-1","MiscellaneousDefect":"Miscellaneous Defect","missCritical":"Critical","missMajor":"Major","missMinor":"Minor","randomDropDown":"A random value"}]})
   const [PlaceholderStates, SetPlaceholderStates] = useState({"DefectsSummary":{"totalCritical":"0","totalMajor":"0","totalMinor":"0"}})
+
+  
+  useEffect(() => {
+
+    getData("FieldList")
+    .then((textInputFieldsObject) => {
+      console.log("############## text inputs from async storage #######")
+      console.log(textInputFieldsObject)
+      if(textInputFieldsObject != null)
+        SetFieldList(textInputFieldsObject)
+    })
+    .catch( e => {
+      console.log(e)
+    })
+    
+  }, [])
+  
+  
 
   var dropdownObject = {...DropdownList}
   useEffect(() => {
@@ -114,13 +161,22 @@ const GeneratedCode = () => {
   
   
   
-<View id="mainSection" style={{borderWidth: 2, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
+<View id="mainSection" style={{borderWidth: 0, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
 
   
   
       
       
-   <View id="view1" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view1" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -142,12 +198,13 @@ const GeneratedCode = () => {
                  }}
                  selectedItems={DropdownList.AqlIndex["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
-                 containerStyle={{ padding: 8 ,width: "99%" ,
+                 containerStyle={{ padding: 10 ,width: "99%" ,
                  borderWidth:2,
-                 borderRadius:10,
-                 borderColor:"black",
+                 borderRadius:5,
+                 borderColor:"grey",
                  marginHorizontal: 5,
-                 marginVertical:5,
+                 marginVertical:2,
+                 backgroundColor: "white"
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -215,12 +272,13 @@ const GeneratedCode = () => {
                  }}
                  selectedItems={DropdownList.Factory["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
-                 containerStyle={{ padding: 8 ,width: "99%" ,
+                 containerStyle={{ padding: 10 ,width: "99%" ,
                  borderWidth:2,
-                 borderRadius:10,
-                 borderColor:"black",
+                 borderRadius:5,
+                 borderColor:"grey",
                  marginHorizontal: 5,
-                 marginVertical:5,
+                 marginVertical:2,
+                 backgroundColor: "white"
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -275,7 +333,16 @@ const GeneratedCode = () => {
   
       
       
-   <View id="view2" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view2" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -283,13 +350,19 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "99%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "99%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Brand"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "99%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["brand"]}
               editable={true}
@@ -297,6 +370,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["brand"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -311,13 +385,19 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "99%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "99%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Order Number"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "99%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["orderNo"]}
               editable={true}
@@ -325,6 +405,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["orderNo"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -339,7 +420,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view3" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view3" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#e6e6fa',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -372,23 +462,38 @@ const GeneratedCode = () => {
   
   
       
-      
-   <View id="view4" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view4" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
           
           
+          
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "32.333333333333336%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Order Qty"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["orderQuantity"]}
               editable={true}
@@ -396,19 +501,26 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["orderQuantity"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
             
           
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "32.333333333333336%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Offered Qty"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["offeredQuantity"]}
               editable={true}
@@ -416,27 +528,26 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["offeredQuantity"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
             
           
-      </View>
-      
-      
-      
-      
           
-      <View style={{flexDirection: "row"}}>
-      
-          
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "32.333333333333336%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Excess Qty"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["excessQuantity"]}
               editable={true}
@@ -444,6 +555,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["excessQuantity"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -458,7 +570,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view5" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view5" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -466,13 +587,19 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "99%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "99%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Factory Representative"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "99%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["factoryRepresentative"]}
               editable={false}
@@ -480,6 +607,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["factoryRepresentative"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -494,7 +622,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view6" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view6" 
+    style={{marginVertical: 5, 
+            borderWidth: 2, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -502,8 +639,8 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
-                <Text style={{color: "blue", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>Inspection Type</Text>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+                <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>Inspection Type</Text>
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15}}
                     textStyle={{marginHorizontal: 10, fontSize: 12, fontWeight: "bold", color: "grey"}}
@@ -525,7 +662,7 @@ const GeneratedCode = () => {
                     
                     }}
                     circleSize={10}
-                    boxStyle={{height: 45}}
+                    boxStyle={{height: 45, backgroundColor: "white"}}
                     deactiveColor="grey"
                     activeColor="green"
                     
@@ -546,7 +683,16 @@ const GeneratedCode = () => {
       
       
       
-   <View id="view7" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view7" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -555,13 +701,19 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "49%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="Packed Quantity"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["packedQty"]}
               editable={true}
@@ -569,19 +721,26 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["packedQty"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
             
           
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "49%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="sampleSize"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["sampleSize"]}
               editable={true}
@@ -589,6 +748,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["sampleSize"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -604,13 +764,19 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "49%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="cartonSampleSize"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["cartonSampleSize"]}
               editable={true}
@@ -618,19 +784,26 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["cartonSampleSize"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
             
           
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "49%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="CartonSelected"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["CartonSelected"]}
               editable={true}
@@ -638,6 +811,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["CartonSelected"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -652,13 +826,19 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-         <View style={{width: "49%", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "49%", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="TotalCartons"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "49%", height: 45}}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["TotalCartons"]}
               editable={true}
@@ -666,6 +846,7 @@ const GeneratedCode = () => {
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["TotalCartons"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -680,13 +861,22 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view8" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view8" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#e6e6fa',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
-    <View id ="checkList1 table" style={{marginVertical: 10, width: "100%", }}>
+    <View id ="checkList1 table" style={{marginVertical: 10, width: "100%",}}>
     <ScrollView horizontal id="checkList1 table" contentContainerStyle={{flexDirection: "column"}}>
     
-      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+      <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "#4682b4",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -718,7 +908,7 @@ const GeneratedCode = () => {
             if(key == "id")
               continue
 
-            currentRowArray.push({"id": i.toString(), "value": item[key], "type": key})
+            currentRowArray.push({"id": i.toString(), "valueObject": item[key], "type": key})
             i += 1
           }
           return (
@@ -730,21 +920,20 @@ const GeneratedCode = () => {
               style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
                 
-                if((item["value"].toString()).split(":")[0]  == "INPUT")
-                {
-                  
-                  
-                  const InputKey = (item["value"].toString()).split(":")[2].toString()
-                  const InputType = (item["value"].toString()).split(":")[1].toString()
+               
 
-                  if(InputType == "radioButton")
+                  if(item["valueObject"].type == "radioButton")
                   {
+                    const InputKey = item["valueObject"].variableName
                     return (
                       <SwitchSelector
-                                    options={ [
-                                        { label: "PASS", value: "passed" },
-                                        { label: "FAIL", value: "failed" },
-                                      ]}
+                                    options={(() => {
+                                      var Options = []
+                                      for(var optionObject of item["valueObject"]["options"])
+                                        Options.push({"label": optionObject.name, "value": optionObject.name})
+                                      
+                                      return Options
+                                    })()}
                                     initial={-1}
                                     onPress={(value) => {
                                       var newRadioButtonList = {...RadioButtonList}
@@ -757,16 +946,47 @@ const GeneratedCode = () => {
                                     buttonColor={"red"}
                                     borderColor={"blue"}
                                     hasPadding
-                                    style={{width: 100, marginHorizontal: 10}}
+                                    style={{width: 110, marginHorizontal: 10}}
                                     height={25}
                                     textStyle={{fontSize:10, fontWeight: "bold"}}
                                     selectedTextStyle={{fontSize:10, fontWeight: "bold"}}
-                                    borderRadius={8}
+                                    borderRadius={5}
                            />
                     )
                   }
-                  if(InputType == "textInputField")
+                  if(item["valueObject"].type == "dropdown")
+                  {
+                    const InputKey = item["valueObject"].variableName
+                    return (
+                      <ModalDropdown 
+                        options={(() => {
+                          var Options = []
+                          for (var obj of DropdownList[InputKey].ValuesList)
+                          {
+                            if(obj.name != null)
+                              Options.push(obj.name)
+                            else
+                              Options.push(obj)
+                          }
+                          return Options
+                        })() }
+                        style={{marginHorizontal: 5, padding: 7, borderWidth: 2, borderColor: "grey", borderRadius: 4, marginVertical: 5, width: 110}}
+                        textStyle={{color: "grey", fontWeight: "bold", fontSize: 12}}
+                        dropdownTextStyle={{color: "black"}}
+                        defaultValue="Select a value"
+                        onSelect={(value) => {
+                          
+                          var newDropdownList = {...DropdownList}
+                          newDropdownList[InputKey]["SelectedValue"] = value
+                          SetDropdownList(newDropdownList)
+
+                        }}
+                      />
+                    )
+                  }
+                  if(item["valueObject"].type == "textInputField")
                   {  
+                    const InputKey = item["valueObject"].variableName
                     return (
                       <TextInput
                       // style= {{marginLeft: 4, color: "blue"}}
@@ -786,9 +1006,8 @@ const GeneratedCode = () => {
                     )
                   }
 
-                }
-
-                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
+                
+                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.valueObject.value}</Text>
               }}
               
             />
@@ -807,7 +1026,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view9" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view9" 
+    style={{marginVertical: 5, 
+            borderWidth: 2, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#e6e6fa',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -815,7 +1043,7 @@ const GeneratedCode = () => {
       
       
       
-     <View id="subview1" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+     <View id="subview1" style={{marginVertical: 5, borderWidth: 0, borderColor: "grey", justifyContent: "center", alignItems: "center"}}>
     
       
       
@@ -837,12 +1065,13 @@ const GeneratedCode = () => {
                  }}
                  selectedItems={DropdownList.MainDefect["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
-                 containerStyle={{ padding: 8 ,width: "99%" ,
+                 containerStyle={{ padding: 10 ,width: "99%" ,
                  borderWidth:2,
-                 borderRadius:10,
-                 borderColor:"black",
+                 borderRadius:5,
+                 borderColor:"grey",
                  marginHorizontal: 5,
                  marginVertical:5,
+                 backgroundColor: "white"
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -898,57 +1127,84 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Critical"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["mainCritical"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["mainCritical"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Critical"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["mainCritical"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["mainCritical"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Major"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["mainMajor"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["mainMajor"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Major"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["mainMajor"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["mainMajor"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Minor"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["mainMinor"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["mainMinor"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Minor"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["mainMinor"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["mainMinor"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
       </View>
@@ -961,39 +1217,57 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Mean"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["mean"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["mean"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Mean"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["mean"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["mean"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Median"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["median"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["median"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Median"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["median"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["median"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
       </View>
@@ -1005,7 +1279,7 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
@@ -1102,7 +1376,7 @@ const GeneratedCode = () => {
     <View id ="Main Defect table" style={{marginVertical: 10, width: "100%", }}>
     <ScrollView horizontal id="Main Defect table" contentContainerStyle={{flexDirection: "column"}}>
     
-      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+      <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "#4682b4",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -1198,7 +1472,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view10" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view10" 
+    style={{marginVertical: 5, 
+            borderWidth: 2, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#e6e6fa',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -1206,7 +1489,7 @@ const GeneratedCode = () => {
       
       
       
-     <View id="subview1" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+     <View id="subview1" style={{marginVertical: 5, borderWidth: 0, borderColor: "grey", justifyContent: "center", alignItems: "center"}}>
     
       
       
@@ -1214,21 +1497,30 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "99%"}}
-             placeholder={"Miscellaneous Defect"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["MiscellaneousDefect"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["MiscellaneousDefect"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "99%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Miscellaneous Defect"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["MiscellaneousDefect"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["MiscellaneousDefect"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
       </View>
@@ -1242,57 +1534,84 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Critical"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["missCritical"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["missCritical"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Critical"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["missCritical"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["missCritical"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Major"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["missMajor"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["missMajor"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Major"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["missMajor"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["missMajor"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
           
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "32.333333333333336%"}}
-             placeholder={"Minor"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["missMinor"]}
-             editable={true}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["missMinor"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "32.333333333333336%", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
+         <FloatingLabelInput
+              label="Minor"
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              maxLength={50}
+              value={FieldList["missMinor"]}
+              editable={true}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["missMinor"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             
           
       </View>
@@ -1318,12 +1637,13 @@ const GeneratedCode = () => {
                  }}
                  selectedItems={DropdownList.randomDropDown["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
-                 containerStyle={{ padding: 8 ,width: "99%" ,
+                 containerStyle={{ padding: 10 ,width: "99%" ,
                  borderWidth:2,
-                 borderRadius:10,
-                 borderColor:"black",
+                 borderRadius:5,
+                 borderColor:"grey",
                  marginHorizontal: 5,
                  marginVertical:5,
+                 backgroundColor: "white"
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -1377,7 +1697,7 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
@@ -1474,7 +1794,7 @@ const GeneratedCode = () => {
     <View id ="Miss Defect table" style={{marginVertical: 10, width: "100%", }}>
     <ScrollView horizontal id="Miss Defect table" contentContainerStyle={{flexDirection: "column"}}>
     
-      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+      <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "#4682b4",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -1570,7 +1890,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view11" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view11" 
+    style={{marginVertical: 5, 
+            borderWidth: 2, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#b0c4de',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -1578,8 +1907,8 @@ const GeneratedCode = () => {
       <View style={{flexDirection: "row"}}>
       
           
-            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
-                <Text style={{color: "blue", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>Result</Text>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+                <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>Result</Text>
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15}}
                     textStyle={{marginHorizontal: 10, fontSize: 12, fontWeight: "bold", color: "grey"}}
@@ -1601,7 +1930,7 @@ const GeneratedCode = () => {
                     
                     }}
                     circleSize={10}
-                    boxStyle={{height: 45}}
+                    boxStyle={{height: 45, backgroundColor: "white"}}
                     deactiveColor="grey"
                     activeColor="green"
                     
@@ -1622,7 +1951,16 @@ const GeneratedCode = () => {
       
       
       
-   <View id="view12" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view12" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#e6e6fa',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -1703,7 +2041,16 @@ const GeneratedCode = () => {
   
   
       
-   <View id="view13" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view13" 
+    style={{marginVertical: 5, 
+            borderWidth: 0, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: '#e6e6fa',
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   
       
       
@@ -1742,18 +2089,19 @@ const GeneratedCode = () => {
   );
 };
 
-const styles = StyleSheet.create({
+{/*
+  const styles = StyleSheet.create({
     input: {
         borderWidth: 2,
         paddingHorizontal: 15,
-        borderColor: "black",
-        padding: 3,
-        marginVertical: 5,
+        borderColor: "grey",
+        padding: 10,
+        marginVertical: 2,
         marginHorizontal: 5,
-        color: "blue",
+        color: "gray",
         fontSize: 15,
         fontWeight: "bold",
-        borderRadius: 10,
+        borderRadius: 5,
         width: "100%"
        
        
@@ -1764,13 +2112,14 @@ const styles = StyleSheet.create({
         textAlign: "center"
       },
       openButton: {
-        backgroundColor: "blue",
-        borderRadius: 10,
+        backgroundColor: "#b0c4de",
+        borderRadius: 5,
         padding: 10,
         elevation: 10,
 
       }
 });
+*/}
 
 export default GeneratedCode;
 

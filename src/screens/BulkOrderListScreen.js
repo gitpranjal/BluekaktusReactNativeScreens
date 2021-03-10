@@ -20,6 +20,7 @@ import { FlatList } from "react-native";
 import { SearchBar } from "react-native-elements"
 
 import BulkOrderSuperItem from "../components/BulkOrderSuperItem"
+import ModalDropdown from 'react-native-modal-dropdown'
 
 const screenHeight = Dimensions.get('window').height
 const screenWidth = Dimensions.get('window').width
@@ -171,6 +172,16 @@ const BulkOrderListScreen = () => {
             />
 
             <View>
+
+            <ModalDropdown 
+            options={['option 1', 'option 2']}
+            style={{padding: 10, borderWidth: 2, borderColor: "black", borderRadius: 4, marginVertical: 5}}
+            textStyle={{color: "grey", fontWeight: "bold", fontSize: 15}}
+            dropdownTextStyle={{color: "black"}}
+            onSelect={() => {
+              
+            }}
+            />
 
               <SearchBar
                 placeholder="Search by order brand or style"
