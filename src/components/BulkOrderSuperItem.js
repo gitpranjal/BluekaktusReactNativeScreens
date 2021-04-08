@@ -17,12 +17,12 @@ class BulkOrderSuperItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      brandName: props.brandName,
-      orderNo: props.orderNo,
-      styleNo:props.styleNo,
-      brandID: props.brandID,
-      orderID: props.orderID,
-      styleID: props.styleID
+      InspectionType: props.ACTIVITY_NAME,
+      InspectionStatus: props.ACTIVITY_STATUS,
+      PONumber:props.PO_NO,
+      PRNumber: props.PR_NO,
+      PRQty: props.PR_QTY,
+      
     };
   }
 
@@ -51,18 +51,22 @@ class BulkOrderSuperItem extends React.Component {
       >
         {/* <TouchableOpacity activeOpacity={0.8} onPress={state.onSelect}> */}
           <View>
-          <Text style={styles.color} numberOfLines={1}>
-              {(state.orderNo).toUpperCase()}
+        
+            <Text style={styles.desc} numberOfLines={1}>
+              {"Inspection Type:  "+state.InspectionType.toUpperCase()}
             </Text>
             <Text style={styles.desc} numberOfLines={1}>
-              {"Brand Name:  "+state.brandName.toUpperCase()}
+              {"Inspection Status:  "+state.InspectionStatus}
             </Text>
             <Text style={styles.desc} numberOfLines={1}>
-              {"Style:  "+state.styleNo}
+              {"PO Number:  "+state.PONumber}
             </Text>
-            {/* <Text style={styles.desc} numberOfLines={1}>
-              {"Contact:  "+state.phNo}
-            </Text> */}
+            <Text style={styles.desc} numberOfLines={1}>
+              {"PR Number:  "+state.PRNumber}
+            </Text>
+            <Text style={styles.desc} numberOfLines={1}>
+              {"PR Qty:  "+state.PRQty}
+            </Text>
           </View>
         {/* </TouchableOpacity> */}
       </View>

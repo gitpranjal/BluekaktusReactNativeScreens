@@ -6,11 +6,13 @@ import {
   TouchableHighlight,
   View,
   Keyboard,
-  ScrollView,
-  SafeAreaView
+  ActivityIndicator,
+  SafeAreaView, Alert, Modal
 } from "react-native";
 
+
 import SearchableDropdown from 'react-native-searchable-dropdown'
+// import { Dropdown } from 'react-native-material-dropdown'
 
 
 import Colors from "../../constants/colors"
@@ -18,26 +20,85 @@ import { Dimensions } from 'react-native';
 import { TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
 import { SearchBar } from "react-native-elements"
+import { AntDesign } from '@expo/vector-icons'
+import DateTimePickerModal from "react-native-modal-datetime-picker"
 
 import BulkOrderSuperItem from "../components/BulkOrderSuperItem"
-import ModalDropdown from 'react-native-modal-dropdown'
+
+import moment from "moment"
 
 const screenHeight = Dimensions.get('window').height
 const screenWidth = Dimensions.get('window').width
 
-const BulkOrderListScreen = () => {
+const BulkOrderListScreen = (props) => {
 
-    const companyID = 1
-    const userID = 13
+    const companyID = 84
+    const userID = 167
     const ApiUrl = "https://qualitylite.bluekaktus.com"
+
+    // const ApiUrl = "http://c04dae122b77.ngrok.io"
 
 
     const [FactoryList, SetFactoryList] = useState([])
     const [BulkOrderList, SetBulkOrderList] = useState([])
-    const [Factory, SetFactory] = useState({})
+    const [Factory, SetFactory] = useState("")
+    const [Floor, SetFloor] = useState("")
+    const [Line, SetLine] = useState("")
     const [SearchBarText, SetSearchBarText] = useState("")
     const [FilteredList, SetFilteredList] = useState([])
-    const [SelectedOrder, SetSelectedOrder] = useState({})
+    const [FloorList, SetFloorList] = useState([])
+    const [LineList, SetLineList] = useState([])
+    const [AuditStatus, SetAuditStatus] = useState("new")
+    const [OptionModalVisible, SetOptionModalVisible] = useState(false)
+    const [Order, SetOrder] = useState({})
+    const [ViewerAction, SetViewerAction] = useState({})
+    // const [FilterDateObject, SetFilterDateObject] = useState("")
+    const [ListLoaded, SetListLoaded] = useState(true)
+    const [FromToFilterVisible, SetFromToFilterVisible] = useState(true)
+    const [DatePickerModalVisible, SetDatePickerModalVisible] = useState(false)
+    const [FromDateObject, SetFromDateObject] = useState("")
+    const [ToDateObject, SetToDateObject] = useState({id: "5", name: moment().format("DD-MMM-YYYY"),  filterDate: moment().format("DD-MMM-YYYY h:mm:ss")})
+    const [DateTypeSelected, SetDateTypeSelected] = useState("")
+    const [StyleList, SetStyleList] = useState([])
+    const [Style, SetStyle] = useState("")
+
+
+    const searchBarFilter = (text, SelectedAuditStatus = "new", list=BulkOrderList) => {
+
+      const newFilteredList = list.filter((item) => {
+        
+        // console.log(`${item.brandName.toUpperCase()} ${item.styleNo.toUpperCase()} ${item.orderNo.toUpperCase()}`)
+        // console.log(text.toUpperCase())
+        // console.log(`${item.brandName.toUpperCase()} ${item.styleNo.toUpperCase()} ${item.orderNo.toUpperCase()}`.includes(text.toUpperCase()))
+
+        return item.auditStatus.toLowerCase() == SelectedAuditStatus.toLowerCase() && `${item.brandName.toUpperCase()} ${item.styleNo.toUpperCase()} ${item.orderNo.toUpperCase()}`.includes(text.toUpperCase())
+      })
+      
+        // console.log("############ Filter Object ############")
+        // console.log(FilterDateObject)
+        if(FromDateObject != "" && SelectedAuditStatus.toLowerCase() != "new")
+          dateFilter(FromDateObject.filterDate, ToDateObject.filterDate , SelectedAuditStatus, newFilteredList)
+        else
+          SetFilteredList(newFilteredList)
+    }
+
+    const dateFilter = (fromDate, toDate, SelectedAuditStatus, list=BulkOrderList) => {
+      // date = moment(date).format('DD-MMM-YYYY h:mm:ss')
+
+      const newFilteredList = list.filter((item) => {
+        
+        // console.log(`Filter date: ${date}`)
+        // console.log(`Current object date: ${item.inspectionOn}`)
+        // console.log(`is current item valid: ${moment(item.inspectionOn).isAfter(moment(date))}`)
+       
+        return item.inspectionOn != "" && item.auditStatus.toLowerCase() == SelectedAuditStatus.toLowerCase() && moment(item.inspectionOn).isAfter(moment(fromDate)) && moment(item.inspectionOn).isBefore(moment(toDate))
+
+        // return item.inspectionOn != "" && item.auditStatus.toLowerCase() == AuditStatus.toLowerCase() && moment(item.inspectionOn).isAfter(moment(date))
+      })
+
+      SetFilteredList(newFilteredList)
+      
+    }
 
     useEffect(() => {
 
@@ -62,13 +123,13 @@ const BulkOrderListScreen = () => {
         .then(body => {
           // SetUserRoleList(body.result)
           var newFactoryList = []
-          console.log("############ Factory List ##########")
+          // console.log("############ Factory List ##########")
           
           body.result.forEach((factoryObject) => {
-            const newFactoryObject = {id: factoryObject.factoryID, name: factoryObject.factoryName}
+            const newFactoryObject = {id: factoryObject.factoryID, name: factoryObject.factoryName, ...factoryObject}
             newFactoryList.push(newFactoryObject)
           })
-          console.log(body.result)
+          // console.log(body.result)
           
           SetFactoryList(newFactoryList)
         })
@@ -76,10 +137,11 @@ const BulkOrderListScreen = () => {
   
       }, [])
 
+      {/*
       useEffect(() => {
 
         fetch(
-          `${ApiUrl}/api/bkQuality/checking/getBOSList`,
+          `${ApiUrl}/api/bkQuality/auditing/getBOSCList`,
           {
             method: "POST",
             body: JSON.stringify({
@@ -99,92 +161,572 @@ const BulkOrderListScreen = () => {
         .then(body => {
           // SetUserRoleList(body.result)
           var newBulkOrderList = []
-          console.log("############ Bulk Order List ##########")
+          // console.log("############ Bulk Order List ##########")
           
           body.result.forEach((bulkOrderObject) => {
-            const newBulkOrderObject = {...bulkOrderObject}
+            var newBulkOrderObject = {...bulkOrderObject}
+            newBulkOrderObject["objectId"] = newBulkOrderList.length
             newBulkOrderList.push(newBulkOrderObject)
           })
-          console.log(newBulkOrderList)
+          // console.log(newBulkOrderList)
           
           SetBulkOrderList(newBulkOrderList)
-          SetFilteredList(newBulkOrderList)
+          // SetFilteredList(newBulkOrderList)
+          searchBarFilter("", "new", newBulkOrderList)
+          SetListLoaded(true)
         })
         .catch((error) => console.log(error)); //to catch the errors if any
   
       }, [])
+    */}
+    useEffect(() => {
 
+      fetch("https://maxservicestg.bluekaktus.com/Service1.svc/GetStyleListServiceADH/801/551")
+      .then(response => response.json())
+      .then(body => {
+        var newStylesList = []
+        body.forEach((stylesObject) => {
+          
+          // console.log("############ Bulk Order List ##########")
+          var newStylesObject = {...stylesObject}
+          newStylesObject["id"] = newStylesList.length
+          newStylesObject["name"] = newStylesObject["STYLE_NO"]
+          newStylesList.push(newStylesObject)
+        })
+        
+        
+        SetStyleList(newStylesList)
+        
+       
+      })
+      .catch(e =>{
+        console.log("###############Error fetching Styles list#############")
+        console.log(e)
+      })
+
+    }, [])
+
+    { /*useEffect(() => {
+
+      fetch("https://maxservicestg.bluekaktus.com/Service1.svc/GetInspectionData/801/107087")
+      .then(response => response.json())
+      .then(body => {
+        var newBulkOrderList = []
+        body.forEach((bulkOrderObject) => {
+          
+          // console.log("############ Bulk Order List ##########")
+          var newBulkOrderObject = {...bulkOrderObject}
+          newBulkOrderObject["objectId"] = newBulkOrderList.length
+        
+          newBulkOrderList.push(newBulkOrderObject)
+        })
+        console.log(newBulkOrderList)
+        
+        SetBulkOrderList(newBulkOrderList)
+        SetFilteredList(newBulkOrderList)
+        //searchBarFilter("", "new", newBulkOrderList)
+        SetListLoaded(true)
+      })
+      .catch(e =>{
+        console.log("###############Error fetching Inspection list#############")
+        console.log(e)
+      })
+
+    }, [])
+
+  */}
 
       return (
         <View style={{marginHorizontal: 10}}>
-            <SearchableDropdown
-              //On text change listner on the searchable input
-              onTextChange={(text) => console.log(text)}
-              onItemSelect={item => { SetFactory(item)
-              }}
-              selectedItems={Factory}
-              //onItemSelect called after the selection from the dropdown
-              containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.1 ,
-               borderWidth:3,
-               borderRadius:10,
-               borderColor:Colors.primaryColor,
-               marginTop: 10,
-              }}
-              //suggestion container style
-              textInputStyle={{
-                //inserted text style
-                paddingLeft:10,
-                fontSize: 20,
-                fontWeight: "bold",
-                color:Colors.primaryColor
-    
-              }}
-              itemStyle={{
-                //single dropdown item style
-                padding: 3,
-                marginLeft:5,
-                width:Dimensions.get("window").width / 1.25 ,
-                marginTop: 2,
-                borderBottomColor:"#00334e80",
-                borderBottomWidth: 1,
-              }}
-              itemTextStyle={{
-                //text style of a single dropdown item
-                fontSize: 18,
-                fontWeight: "bold",
-                color:Colors.primaryColor,
-              }}
-              itemsContainerStyle={{
-                //items container style you can pass maxHeight
-                //to restrict the items dropdown hieght
-                maxHeight: '100%',
-              }}
-              items={FactoryList}
-              //mapping of item array
-              //default selected item index
-              placeholder={"Select factory"}
-              placeholderTextColor="#00334e80"
-              //place holder for the search input
-              resetValue={false}
-              //reset textInput Value with true and false state
-              underlineColorAndroid="transparent"
-              //To remove the underline from the android input
-            />
+
+          <DateTimePickerModal
+                  mode="date"
+                  isVisible={DatePickerModalVisible}
+                  // minimumDate={this.state.OrderDateY}
+                  onConfirm={(date)=>{
+                      
+                    console.log(moment(date).format("DD-MMM-YYYY h:mm:ss"))
+                    if(DateTypeSelected == "from")
+                      {
+                        const fromDateObject = {id: "4", name: moment(date).format("DD-MMM-YYYY"),  filterDate: moment(date).format("DD-MMM-YYYY h:mm:ss")}
+                        SetFromDateObject(fromDateObject)
+                        dateFilter(fromDateObject.filterDate, ToDateObject.filterDate, AuditStatus, BulkOrderList)
+
+                      }
+                    else if(DateTypeSelected == "to")
+                    {
+                      const toDateObject = {id: "5", name: moment(date).format("DD-MMM-YYYY"),  filterDate: moment(date).format("DD-MMM-YYYY h:mm:ss")}
+                      SetToDateObject(toDateObject)
+                      dateFilter(FromDateObject.filterDate, toDateObject.filterDate, AuditStatus,  BulkOrderList)
+                    }
+
+                    SetDatePickerModalVisible(false)
+                  }}
+                  onCancel={()=>{
+                    SetDatePickerModalVisible(false)
+                  }}
+                />          
+            
+            <View style={{marginVertical: 5, justifyContent: "center", alignItems: "center",}}>
+              <FlatList 
+                data={[{id: "new", label: "New"}, {id: "passed", label: "Passed"}, {id: "failed", label: "Failed"},]}
+                keyExtractor={(statusObject) => statusObject.id}
+                contentContainerStyle={{flexDirection: "row"}}
+                renderItem={({item}) => {
+                  return (
+                    <TouchableOpacity
+                    style={{width: 80, height: 45, justifyContent: "center", alignItems: "center",borderRadius: 5,  backgroundColor: item.label.toLowerCase() == AuditStatus.toLowerCase() ? Colors.accentColor : Colors.primaryColor}}
+                    onPress={() => {
+                      SetAuditStatus(item.label)
+                      searchBarFilter(SearchBarText, item.label)
+                    }}
+                  >
+                    <Text style={{fontSize: 15, fontWeight: "bold", color: item.label.toLowerCase() == AuditStatus.toLowerCase() ? Colors.primaryColor :Colors.accentColor}}>{item.label}</Text>
+                  </TouchableOpacity>
+                  )
+                }}
+              />
+            </View>
+            {/* {(() => {
+              if(AuditStatus.toLowerCase() != "new")
+                return (
+                  <TouchableOpacity
+                    style={{alignSelf: "flex-end",}}
+                    onPress={() => {
+
+                    }}
+                  >
+                    <Text style={{color: "grey", fontWeight: "bold", fontSize: 15, marginHorizontal: 10}}>Filter</Text>
+                  </TouchableOpacity>
+                )
+            })()} */}
+            
+            {(() => {
+              if(AuditStatus.toLowerCase() == "new")
+                return (
+                  <View>
+                    <Text style={{color: "grey", marginTop: 10}}>Location Information</Text>
+                    <SearchableDropdown
+                  //On text change listner on the searchable input
+                  id="Factory"
+                  onTextChange={(text) => console.log(text)}
+                  onItemSelect={item => { 
+                    SetFactory(item)
+                    var newFloorList = []
+                    item.locationgroups.forEach((FloorObject => {
+                      newFloorList.push({"id": FloorObject.locationgroupID, "name": FloorObject.locationgroupName, "lines": FloorObject.lines})
+                    }))
+
+                    SetFloorList(newFloorList)
+
+                  }}
+                  selectedItems={Factory}
+                  //onItemSelect called after the selection from the dropdown
+                  containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.05 ,
+                  borderWidth:3,
+                  borderRadius:10,
+                  borderColor:Colors.primaryColor,
+                  marginTop: 10,
+                  }}
+                  //suggestion container style
+                  textInputStyle={{
+                    //inserted text style
+                    paddingLeft:10,
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color:Colors.primaryColor
+        
+                  }}
+                  itemStyle={{
+                    //single dropdown item style
+                    padding: 3,
+                    marginLeft:5,
+                    width:Dimensions.get("window").width / 1.25 ,
+                    marginTop: 2,
+                    borderBottomColor:"#00334e80",
+                    borderBottomWidth: 1,
+                  }}
+                  itemTextStyle={{
+                    //text style of a single dropdown item
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color:Colors.primaryColor,
+                  }}
+                  itemsContainerStyle={{
+                    //items container style you can pass maxHeight
+                    //to restrict the items dropdown hieght
+                    maxHeight: '100%',
+                  }}
+                  items={FactoryList}
+                  //mapping of item array
+                  //default selected item index
+                  placeholder={"Select factory"}
+                  placeholderTextColor="#00334e80"
+                  //place holder for the search input
+                  // resetValue={AuditStatus.toLowerCase() != "new"}
+                  //reset textInput Value with true and false state
+                  underlineColorAndroid="transparent"
+                  //To remove the underline from the android input
+                />
+
+                  <SearchableDropdown
+                  //On text change listner on the searchable input
+                  id="Style"
+                  onTextChange={(text) => console.log(text)}
+                  onItemSelect={item => { 
+                   
+                    SetStyle(item)
+                    fetch("https://maxservicestg.bluekaktus.com/Service1.svc/GetInspectionData/801/"+item["TNA_ID"])
+                    .then(response => response.json())
+                    .then(body => {
+                      var newBulkOrderList = []
+                      body.forEach((bulkOrderObject) => {
+                        
+                        // console.log("############ Bulk Order List ##########")
+                        var newBulkOrderObject = {...bulkOrderObject}
+                        newBulkOrderObject["objectId"] = newBulkOrderList.length
+
+                        newBulkOrderObject["CUT_QUANTITY"] = item["CUT_QUANTITY"]
+                        newBulkOrderObject["FACTORY"] = item["FACTORY"]
+                        newBulkOrderObject["FG_CODE"] = item["FG_CODE"]
+                        newBulkOrderObject["FG_VENDOR"] = item["FG_VENDOR"]
+                        newBulkOrderObject["FG_VENDOR_ID"] = item["FG_VENDOR_ID"]
+                        newBulkOrderObject["OCR_STATUS"] = item["OCR_STATUS"]
+                        newBulkOrderObject["ORDER_ID"] = item["ORDER_ID"]
+                        newBulkOrderObject["QUALITY_MANAGER_ID"] = item["QUALITY_MANAGER_ID"]
+                        newBulkOrderObject["STYLE_NO"] = item["STYLE_NO"]
+                        newBulkOrderObject["TNA_ID"] = item["TNA_ID"]
+                        newBulkOrderObject["TOTAL_PACKED_QTY"] = item["TOTAL_PACKED_QTY"]
+                        newBulkOrderObject["vOD"] = item["VOD"]
+
+                        newBulkOrderList.push(newBulkOrderObject)
+                      })
+                      console.log(newBulkOrderList)
+                      
+                      SetBulkOrderList(newBulkOrderList)
+                      SetFilteredList(newBulkOrderList)
+                      //searchBarFilter("", "new", newBulkOrderList)
+                      //SetListLoaded(true)
+                      
+                    })
+                    .catch(e =>{
+                      console.log("###############Error fetching Inspection list#############")
+                      console.log(e)
+                    })
+
+                  }}
+                  selectedItems={Style}
+                  //onItemSelect called after the selection from the dropdown
+                  containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.05 ,
+                  borderWidth:3,
+                  borderRadius:10,
+                  borderColor:Colors.primaryColor,
+                  marginTop: 10,
+                  }}
+                  //suggestion container style
+                  textInputStyle={{
+                    //inserted text style
+                    paddingLeft:10,
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color:Colors.primaryColor
+        
+                  }}
+                  itemStyle={{
+                    //single dropdown item style
+                    padding: 3,
+                    marginLeft:5,
+                    width:Dimensions.get("window").width / 1.25 ,
+                    marginTop: 2,
+                    borderBottomColor:"#00334e80",
+                    borderBottomWidth: 1,
+                  }}
+                  itemTextStyle={{
+                    //text style of a single dropdown item
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color:Colors.primaryColor,
+                  }}
+                  itemsContainerStyle={{
+                    //items container style you can pass maxHeight
+                    //to restrict the items dropdown hieght
+                    maxHeight: '100%',
+                  }}
+                  items={StyleList}
+                  //mapping of item array
+                  //default selected item index
+                  placeholder={"Select style"}
+                  placeholderTextColor="#00334e80"
+                  //place holder for the search input
+                  // resetValue={AuditStatus.toLowerCase() != "new"}
+                  //reset textInput Value with true and false state
+                  underlineColorAndroid="transparent"
+                  //To remove the underline from the android input
+                />
+
+                  </View>
+                )
+              if(FromToFilterVisible)
+                  return (
+                    <View>
+                          <View id="FromDate" style={Styles.date}>
+                            <Text style={{fontSize: 10, fontWeight: "bold", color: "grey"}}>Inspection from</Text>
+                            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                                {(() => {
+                                  if(FromDateObject == "")
+                                    return (
+                                      <Text style={{color :"grey", fontSize: 20}}>Select a date</Text>
+                                    )
+                                  return (
+                                    <Text style={{  marginRight:10,
+                                      fontSize: 20,
+                                      fontWeight: "bold",
+                                      borderRadius: 10,
+                                      color: Colors.primaryColor,
+                                      width: Dimensions.get("window").width / 1.8
+                                      }}>{FromDateObject.name}</Text>
+                                  )
+                                })()}
+                                
+                                <TouchableOpacity style={{alignContent:"space-between",width:"10%"}} onPress={()=>{
+                                    // this.setState({OrderDatePickerVis:true})
+                                    SetDateTypeSelected("from")
+                                    SetDatePickerModalVisible(true)
+                                }}>
+                                    <AntDesign name="calendar" size={28} color={Colors.accentColor} />
+                                </TouchableOpacity>
+                            </View>
+                          </View>
+
+                          <View id="ToDate" style={Styles.date}>
+                            <Text style={{fontSize: 10, fontWeight: "bold", color: "grey"}}>Inspection upto</Text>
+                            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                                <Text style={{  marginRight:10,
+                                        fontSize: 20,
+                                        fontWeight: "bold",
+                                        borderRadius: 10,
+                                        color: Colors.primaryColor,
+                                        width: Dimensions.get("window").width / 1.8
+                                        }}>{ToDateObject.name}</Text>
+                                <TouchableOpacity style={{alignContent:"space-between",width:"10%"}} onPress={()=>{
+                                    // this.setState({OrderDatePickerVis:true})
+                                    SetDateTypeSelected("to")
+                                    SetDatePickerModalVisible(true)
+                                }}>
+                                    <AntDesign name="calendar" size={28} color={Colors.accentColor} />
+                                </TouchableOpacity>
+                            </View>
+                          </View>
+                    </View>
+                  )
+              // if(!FromToFilterVisible)
+              // return (
+              //   <View>
+              //     <TouchableOpacity
+              //       onPress={() => {
+              //         SetFromToFilterVisible(true)
+              //       }}
+              //     >
+              //       <Text style={{color: "grey", marginTop: 10}}>Detailed Datewise filter</Text>
+              //     </TouchableOpacity>
+                  
+              //     <SearchableDropdown
+              //   //On text change listner on the searchable input
+              //       id="DateFilter"
+              //       onTextChange={(text) => console.log(text)}
+              //       onItemSelect={dateObject => { 
+       
+              //         dateFilter(dateObject.filterDate, ToDateObject.filterDate, BulkOrderList)
+              //         console.log(dateObject)
+
+              //       }}
+              //       selectedItems={FromDateObject}
+              //       //onItemSelect called after the selection from the dropdown
+              //       containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.05 ,
+              //       borderWidth:3,
+              //       borderRadius:10,
+              //       borderColor:Colors.primaryColor,
+              //       marginTop: 10,
+              //       }}
+              //       //suggestion container style
+              //       textInputStyle={{
+              //         //inserted text style
+              //         paddingLeft:10,
+              //         fontSize: 20,
+              //         fontWeight: "bold",
+              //         color:Colors.primaryColor
+          
+              //       }}
+              //       itemStyle={{
+              //         //single dropdown item style
+              //         padding: 3,
+              //         marginLeft:5,
+              //         width:Dimensions.get("window").width / 1.25 ,
+              //         marginTop: 2,
+              //         borderBottomColor:"#00334e80",
+              //         borderBottomWidth: 1,
+              //       }}
+              //       itemTextStyle={{
+              //         //text style of a single dropdown item
+              //         fontSize: 18,
+              //         fontWeight: "bold",
+              //         color:Colors.primaryColor,
+              //       }}
+              //       itemsContainerStyle={{
+              //         //items container style you can pass maxHeight
+              //         //to restrict the items dropdown hieght
+              //         maxHeight: '100%',
+              //       }}
+              //       items={[{"id": "1", "name": "Last 7 Days", "filterDate": moment().subtract(7,'d').format('DD-MMM-YYYY h:mm:ss')}, 
+              //               {"id": "2", "name": "Last 14 Days", "filterDate": moment().subtract(14,'d').format('DD-MMM-YYYY h:mm:ss')}, 
+              //               {"id": "3", "name": "Last month", "filterDate": moment().subtract(30,'d').format('DD-MMM-YYYY h:mm:ss')},]}
+              //       //mapping of item array
+              //       //default selected item index
+              //       placeholder={"View inspection report for date"}
+              //       placeholderTextColor="#00334e80"
+              //       //place holder for the search input
+                    
+              //       //reset textInput Value with true and false state
+              //       underlineColorAndroid="transparent"
+              //       //To remove the underline from the android input
+      
+              //     />
+              //   </View>
+              // )
+            })()}
+            
+            
+
+            {/* {(() => {
+              if(Factory != "" && AuditStatus.toLowerCase() == "new")
+                return (
+                  <SearchableDropdown
+                      //On text change listner on the searchable input
+                      id="Floor"
+                      onTextChange={(text) => console.log(text)}
+                      onItemSelect={item => { 
+                        SetFloor(item)
+                        var newLinesList = []
+                        item.lines.forEach((LineObject) => {
+                          newLinesList.push({"id": LineObject.lineID, "name": LineObject.lineName})
+                        })
+                        SetLineList(newLinesList)
+                      }}
+                      selectedItems={Floor}
+                      //onItemSelect called after the selection from the dropdown
+                      containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.05 ,
+                      borderWidth:3,
+                      borderRadius:10,
+                      borderColor:Colors.primaryColor,
+                      marginTop: 10,
+                      }}
+                      //suggestion container style
+                      textInputStyle={{
+                        //inserted text style
+                        paddingLeft:10,
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color:Colors.primaryColor
+            
+                      }}
+                      itemStyle={{
+                        //single dropdown item style
+                        padding: 3,
+                        marginLeft:5,
+                        width:Dimensions.get("window").width / 1.25 ,
+                        marginTop: 2,
+                        borderBottomColor:"#00334e80",
+                        borderBottomWidth: 1,
+                      }}
+                      itemTextStyle={{
+                        //text style of a single dropdown item
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        color:Colors.primaryColor,
+                      }}
+                      itemsContainerStyle={{
+                        //items container style you can pass maxHeight
+                        //to restrict the items dropdown hieght
+                        maxHeight: '100%',
+                      }}
+                      items={FloorList}
+                      //mapping of item array
+                      //default selected item index
+                      placeholder={"Select floor"}
+                      placeholderTextColor="#00334e80"
+                      //place holder for the search input
+                      resetValue={false}
+                      //reset textInput Value with true and false state
+                      underlineColorAndroid="transparent"
+                      //To remove the underline from the android input
+                  />
+                )
+            })()}
+
+              {(() => {
+                if(Floor != "" && AuditStatus.toLowerCase() == "new")
+                  return (
+                    <SearchableDropdown
+                        //On text change listner on the searchable input
+                        id="Line"
+                        onTextChange={(text) => console.log(text)}
+                        onItemSelect={item => { SetLine(item)
+                        }}
+                        selectedItems={Line}
+                        //onItemSelect called after the selection from the dropdown
+                        containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.05 ,
+                        borderWidth:3,
+                        borderRadius:10,
+                        borderColor:Colors.primaryColor,
+                        marginTop: 10,
+                        }}
+                        //suggestion container style
+                        textInputStyle={{
+                          //inserted text style
+                          paddingLeft:10,
+                          fontSize: 20,
+                          fontWeight: "bold",
+                          color:Colors.primaryColor
+              
+                        }}
+                        itemStyle={{
+                          //single dropdown item style
+                          padding: 3,
+                          marginLeft:5,
+                          width:Dimensions.get("window").width / 1.25 ,
+                          marginTop: 2,
+                          borderBottomColor:"#00334e80",
+                          borderBottomWidth: 1,
+                        }}
+                        itemTextStyle={{
+                          //text style of a single dropdown item
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          color:Colors.primaryColor,
+                        }}
+                        itemsContainerStyle={{
+                          //items container style you can pass maxHeight
+                          //to restrict the items dropdown hieght
+                          maxHeight: '100%',
+                        }}
+                        items={LineList}
+                        //mapping of item array
+                        //default selected item index
+                        placeholder={"Select line"}
+                        placeholderTextColor="#00334e80"
+                        //place holder for the search input
+                        resetValue={false}
+                        //reset textInput Value with true and false state
+                        underlineColorAndroid="transparent"
+                        //To remove the underline from the android input
+                    />
+                  )
+            })()} */}
 
             <View>
 
-            <ModalDropdown 
-            options={['option 1', 'option 2']}
-            style={{padding: 10, borderWidth: 2, borderColor: "black", borderRadius: 4, marginVertical: 5}}
-            textStyle={{color: "grey", fontWeight: "bold", fontSize: 15}}
-            dropdownTextStyle={{color: "black"}}
-            onSelect={() => {
-              
-            }}
-            />
-
               <SearchBar
-                placeholder="Search by order brand or style"
+                placeholder="Search by order brand style or color"
                 placeholderTextColor={Colors.primaryColor}
               
                 containerStyle={{
@@ -196,7 +738,7 @@ const BulkOrderListScreen = () => {
                 inputContainerStyle={{
                   backgroundColor: "#b5b5b580",
                   marginHorizontal: -7,
-                  marginVertical: 10,
+                  marginVertical: 7,
                   width: Dimensions.get("window").width/1.06
                   
                 }}
@@ -204,57 +746,227 @@ const BulkOrderListScreen = () => {
                 value={SearchBarText}
                 onChangeText={(text) => {
                   SetSearchBarText(text)
-                  // searchBarFilter(text)
+                  searchBarFilter(text)
                 }}
               />
+              {/* height: 0.74*Dimensions.get("window").height, marginBottom: 5 */}
+              {(() => {
+                if(!ListLoaded)
+                  return <View style = {{alignSelf: "center", alignItems: "center"}}><ActivityIndicator size="large" color={Colors.primaryColor} /></View>
+              })()}
 
-              <View id="Bulk order list" style={{backgroundColor: "#f0f8ff", height: 0.74*Dimensions.get("window").height}}>
+              <View id="Bulk order list" style={{backgroundColor: "#f0f8ff", height: AuditStatus.toLowerCase() == "new" ? 0.63*Dimensions.get("window").height : 0.55*Dimensions.get("window").height}}>
                 
-              
-
                 <FlatList 
                     data={FilteredList}
-                    keyExtractor={(BulkOrderData) => BulkOrderData.orderID.toString()}
+                    keyExtractor={(BulkOrderData) => BulkOrderData.objectId.toString()+BulkOrderData.TNA_ACTIVITY_ID.toString()}
+                    // style={{marginBottom: 100}}
+                    extraData={FilteredList}
                     renderItem={({item}) => {
-                    return (
+
+                      if(AuditStatus.toLowerCase() == "new")
+                          return (
+              
+                          <TouchableOpacity
+                            
+                            onPress={() => {
+
+                              // if(Line == "" && item.inspectionID == 0)
+                              if(Factory == "" && item.inspectionID == 0)
+                                {
+                                  Alert.alert("Please select location information")
+                                  return
+                                }
+                              var SelectedOrderInfo = {
+                                orderInfo: {
+                                  "companyID": companyID,
+                                  "userID": userID,
+                                  ACCEPT_DATE: item.ACCEPT_DATE,
+                                  ACTIVITY_ID :item.ACTIVITY_ID,
+                                  ACTIVITY_NAME : item.ACTIVITY_NAME,
+                                  ACTIVITY_STATUS : item.ACTIVITY_STATUS,
+                                  FG_CODE: item.FG_CODE,
+                                  INSPECTION_COMPLETE_DATE : item.INSPECTION_COMPLETE_DATE,
+                                  PACKED_QTY : item.PACKED_QTY,
+                                  PO_NO : item.PO_NO,
+                                  PREFERRED_DATE : item.PREFERRED_DATE,
+                                  PR_NO : item.PR_NO,
+                                  PR_QTY : item.PR_QTY,
+                                  ORDER_ID: item.ORDER_ID,
+                                  REQUEST_DATE : item.REQUEST_DATE,
+                                  STATUS : item.STATUS,
+                                  TNA_ACTIVITY_ID : item.TNA_ACTIVITY_ID,
+                                  objectId : item.objectId
+        
+                                }
+                              }
+                              SetOrder(SelectedOrderInfo)
+
+                              //if(item.inspectionID != 0)
+                                //SetOptionModalVisible(true)
+                              //else
+                                props.navigation.navigate("GeneratedCode", SelectedOrderInfo)
+
+                            }}
+                          
+                          >
+
+                            <BulkOrderSuperItem
+                              ACCEPT_DATE={item.ACCEPT_DATE}
+                              ACTIVITY_ID={item.ACTIVITY_ID}
+                              ACTIVITY_NAME={item.ACTIVITY_NAME}
+                              ACTIVITY_STATUS={item.ACTIVITY_STATUS}
+                              FG_CODE={item.FG_CODE}
+                              INSPECTION_COMPLETE_DATE={item.INSPECTION_COMPLETE_DATE}
+                              PACKED_QTY={item.PACKED_QTY}
+                              PO_NO={item.PO_NO}
+                              PREFERRED_DATE={item.PREFERRED_DATE}
+                              PR_NO={item.PR_NO}
+                              PR_QTY={item.PR_QTY}
+                              REQUEST_DATE={item.REQUEST_DATE}
+                              STATUS={item.STATUS}
+                              TNA_ACTIVITY_ID={item.TNA_ACTIVITY_ID}
+                              ORDER_ID={item.ORDER_ID}
+                              objectId={item.objectId}
+                              informer={(action) => {
+
+                                var currentOrder = {
+                                  orderInfo: {
+                                    "companyID": companyID,
+                                    "userID": userID,
+                                    ACCEPT_DATE: item.ACCEPT_DATE,
+                                    ACTIVITY_ID :item.ACTIVITY_ID,
+                                    ACTIVITY_NAME : item.ACTIVITY_NAME,
+                                    ACTIVITY_STATUS : item.ACTIVITY_STATUS,
+                                    FG_CODE: item.FG_CODE,
+                                    INSPECTION_COMPLETE_DATE : item.INSPECTION_COMPLETE_DATE,
+                                    PACKED_QTY : item.PACKED_QTY,
+                                    PO_NO : item.PO_NO,
+                                    PREFERRED_DATE : item.PREFERRED_DATE,
+                                    PR_NO : item.PR_NO,
+                                    PR_QTY : item.PR_QTY,
+                                    REQUEST_DATE : item.REQUEST_DATE,
+                                    STATUS : item.STATUS,
+                                    TNA_ACTIVITY_ID : item.TNA_ACTIVITY_ID,
+                                    objectId : item.objectId
+          
+                                  }
+                                }
+                              }}
+                            />
+                          </TouchableOpacity>
+                          )
+
+
+                      return (
+                        <BulkOrderSuperItem
+                          ACCEPT_DATE={item.ACCEPT_DATE}
+                          ACTIVITY_ID={item.ACTIVITY_ID}
+                          ACTIVITY_NAME={item.ACTIVITY_NAME}
+                          ACTIVITY_STATUS={item.ACTIVITY_STATUS}
+                          FG_CODE={item.FG_CODE}
+                          INSPECTION_COMPLETE_DATE={item.INSPECTION_COMPLETE_DATE}
+                          ORDER_ID={item.ORDER_ID}
+                          PACKED_QTY={item.PACKED_QTY}
+                          PO_NO={item.PO_NO}
+                          PREFERRED_DATE={item.PREFERRED_DATE}
+                          PR_NO={item.PR_NO}
+                          PR_QTY={item.PR_QTY}
+                          REQUEST_DATE={item.REQUEST_DATE}
+                          STATUS={item.STATUS}
+                          TNA_ACTIVITY_ID={item.TNA_ACTIVITY_ID}
+                          objectId={item.objectId}
                     
+                              informer={(action) => {
 
-                    <TouchableOpacity
-                      
-                      onPress={() => {
-                        SetSelectedOrder({
-                          "brandID": item.brandID,
-                          "brandName": item.brandName,
-                          "orderID": item.orderID,
-                          "orderNo": item.orderNo,
-                          "styleID": item.styleID,
-                          "styleNo": item.styleNo
+                                var currentOrder = {
+                                  orderInfo: {
+                                    "companyID": companyID,
+                                    "userID": userID,
+                                    ACCEPT_DATE: item.ACCEPT_DATE,
+                                    ACTIVITY_ID :item.ACTIVITY_ID,
+                                    ACTIVITY_NAME : item.ACTIVITY_NAME,
+                                    ACTIVITY_STATUS : item.ACTIVITY_STATUS,
+                                    FG_CODE: item.FG_CODE,
+                                    INSPECTION_COMPLETE_DATE : item.INSPECTION_COMPLETE_DATE,
+                                    PACKED_QTY : item.PACKED_QTY,
+                                    PO_NO : item.PO_NO,
+                                    PREFERRED_DATE : item.PREFERRED_DATE,
+                                    PR_NO : item.PR_NO,
+                                    PR_QTY : item.PR_QTY,
+                                    REQUEST_DATE : item.REQUEST_DATE,
+                                    STATUS : item.STATUS,
+                                    TNA_ACTIVITY_ID : item.TNA_ACTIVITY_ID,
+                                    ORDER_ID: item.ORDER_ID,
+                                    objectId : item.objectId
+          
+                                  }
+                                }
 
-                        })
+                                if(action == "inspection")
+                                  props.navigation.navigate("InspectionForm", props.navigation.navigate("InspectionForm", currentOrder))
+                                else if(action == "report")
+                                  {
+                                    console.log("Will open pdf")
 
-                      }}
-                    
-                    >
+                                    fetch(
+                                      `${ApiUrl}/api/bkQuality/auditing/getInspectionReport`,
+                                      {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                          basicparams: {
+                                            companyID: companyID,
+                                            userID: companyID,
+                                            inspectionID: item.inspectionID
+                                       
+                                          },
+                                  
+                                        }),
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                          Accept: "application/json",
+                                        },
+                                      }
+                                    )
+                                    .then(res => res.json())
+                                    .then(body => {
+                                      console.log("########## PDF api response ##########")
+                                      console.log(body)
+                                      if(body == null)
+                                      {
+                                        Alert.alert("PDf report couldn't be generated")
+                                        return
+                                      }
+                                      if(body.result == null)
+                                      {
+                                        Alert.alert(body.message)
+                                        return
+                                      }
+                                      
+                                      // makeDownload(body.pdf)
+                                      props.navigation.navigate("PDFScreen", {url: body.pdf})
+                                      
+                                       
+                                    })
+                                    .catch((error) => {
+                                      console.log("##### Error infetching from pdf api #############")
+                                      Alert.alert("Pdf couldnot be fetched")
+                                      console.log(error)
+                                    }); //to catch the errors if any
 
-                      <BulkOrderSuperItem
-                        brandName={item.brandName}
-                        orderNo={item.orderNo}
-                        styleNo={item.styleNo}
-                        brandID={item.brandID}
-                        orderID={item.orderID}
-                        styleID={item.styleID}
-                      />
-                    </TouchableOpacity>
-                      
-                    )
+
+
+                                    
+                                    // props.navigation.navigate("PDFScreen", {url: "http://samples.leanpub.com/thereactnativebook-sample.pdf"} )
+                                  }
+                              }}
+                            />
+                      )
                     }}
                 />
 
               </View>
-
-            </View>
-
-            
+            </View>  
         </View>
 
     )
@@ -279,7 +991,37 @@ const Styles = StyleSheet.create({
         width: Dimensions.get("window").width / 1.1,
     },
 
+    date: {
+      borderWidth: 3,
+      paddingLeft: 20,
+      marginTop:10,
+      alignContent:"space-between",
+      justifyContent:"space-between",
+      padding: 8,
+      borderColor:Colors.primaryColor,
+      fontSize: 20,
+      fontWeight: "bold",
+      borderRadius: 10,
+      // width: Dimensions.get("window").width / 1.1,
+    },
+    label: {
+      backgroundColor: "#f6f5f5",
+      justifyContent: "flex-start",
+      color: "#00334e",
+      fontSize: 15,
+      fontWeight: "bold",
+      width: Dimensions.get("window").width / 1.8,
+    }
 })
 
+BulkOrderListScreen.navigationOptions = (navData) => {
+  return {
+    headerTitle: "Audit",
+    headerStyle: {
+      backgroundColor: Colors.primaryColor,
+    },
+    headerTintColor: Colors.accentColor,
+  };
+}
 
 export default BulkOrderListScreen
