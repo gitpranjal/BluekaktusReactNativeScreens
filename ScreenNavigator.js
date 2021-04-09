@@ -29,7 +29,7 @@ const ScreenNavigator = createStackNavigator(
       GeneratedCode: GeneratedCode
     },
     {
-      initialRouteName: "Home",
+      initialRouteName: "BulkOrderListScreen",
       defaultNavigationOptions: {
         title: "App"
       }

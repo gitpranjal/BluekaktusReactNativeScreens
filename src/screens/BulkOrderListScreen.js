@@ -266,7 +266,7 @@ const BulkOrderListScreen = (props) => {
                     SetDatePickerModalVisible(false)
                   }}
                 />          
-            
+            {/*
             <View style={{marginVertical: 5, justifyContent: "center", alignItems: "center",}}>
               <FlatList 
                 data={[{id: "new", label: "New"}, {id: "passed", label: "Passed"}, {id: "failed", label: "Failed"},]}
@@ -287,25 +287,13 @@ const BulkOrderListScreen = (props) => {
                 }}
               />
             </View>
-            {/* {(() => {
-              if(AuditStatus.toLowerCase() != "new")
-                return (
-                  <TouchableOpacity
-                    style={{alignSelf: "flex-end",}}
-                    onPress={() => {
-
-                    }}
-                  >
-                    <Text style={{color: "grey", fontWeight: "bold", fontSize: 15, marginHorizontal: 10}}>Filter</Text>
-                  </TouchableOpacity>
-                )
-            })()} */}
+              */}
             
             {(() => {
               if(AuditStatus.toLowerCase() == "new")
                 return (
                   <View>
-                    <Text style={{color: "grey", marginTop: 10}}>Location Information</Text>
+                    {/*<Text style={{color: "grey", marginTop: 10}}>Location Information</Text>
                     <SearchableDropdown
                   //On text change listner on the searchable input
                   id="Factory"
@@ -368,6 +356,7 @@ const BulkOrderListScreen = (props) => {
                   underlineColorAndroid="transparent"
                   //To remove the underline from the android input
                 />
+                */}
 
                   <SearchableDropdown
                   //On text change listner on the searchable input
